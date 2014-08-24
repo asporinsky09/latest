@@ -1,0 +1,12 @@
+CREATE TABLE members (
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	email VARCHAR(70) NOT NULL,
+	password CHAR(128) NOT NULL,
+	salt CHAR(128) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE login_attempts (
+	member_id INT NOT NULL,
+	time VARCHAR(30) NOT NULL,
+	FOREIGN KEY (member_id) REFERENCES members(id)
+) ENGINE=InnoDB;
