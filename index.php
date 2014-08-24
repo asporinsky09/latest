@@ -4,7 +4,7 @@ include_once 'inc/functions.php';
 include("components/pagebegin.php"); ?>
 	<body>
 		<header class="clear">
-			<h1 class="logo">blohaute</h1>
+			<a href="index.php"><h1 class="logo">blohaute</h1></a>
 			<?php include("components/userbar.php"); ?>
 		</header>
 		<?php include("components/nav.php"); ?>
@@ -18,5 +18,5 @@ include("components/pagebegin.php"); ?>
 
 	<script type="text/JavaScript" src="js/sha512.js"></script> 
     <script type="text/JavaScript" src="js/forms.js"></script>
-    
+
 </html>

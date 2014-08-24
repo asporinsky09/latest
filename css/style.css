@@ -124,7 +124,8 @@ a {
 }
 
 .login {
-	float: right;
+	right: 2rem;
+	position: fixed;
 }
 
 header fieldset {
@@ -147,7 +148,7 @@ nav li:hover {
 }
 
 footer {
-	position: absolute;
+	position: fixed;
 	right: 2rem;
 	bottom: 2rem;
 	padding-left: 1rem;
@@ -165,14 +166,24 @@ footer,
 	background-color: rgba(0, 0, 0, .45);
 }
 
-.login > input,
-.login > button {
+.login input,
+.login button {
 	background-color: rgb(252, 220, 226);
+	line-height: 1.5rem;
+}
+
+#forgot {
+	background-color: rgba(0, 0, 0, .8);
+	color: rgb(252, 220, 226);
+	font-size: 1rem;
+	font-weight: bold;
+	padding-left: .5rem;
+	padding-right: .5rem;
+	top: -.5rem;
 }
 
 .login input,
 .login button,
-.password-input,
 .btn-login {
 	padding: .25rem; 
 	margin-left: .6rem;
@@ -290,6 +301,7 @@ button {
 	padding: 1.5rem;
 	position: absolute;
 	background-color: rgba(252, 220, 226, .6);
+	height: 35rem;
 }
 
 #booking-form h2 {
