@@ -45,6 +45,41 @@
 }
 
 /* =============
+	Vertical Centering
+============= */
+.vertical-align-wrapper {
+	height: 100%;
+}
+
+.vertical-align-wrapper:before,
+.vertical-center,
+.vertical-bottom,
+.vertical-top {
+	display: inline-block;
+}
+
+.vertical-align-wrapper:before,
+.vertical-center {
+	vertical-align: middle;
+}
+
+.vertical-bottom {
+	vertical-align: bottom;
+}
+
+.vertical-top {
+	vertical-align: top;
+}
+
+.vertical-align-wrapper:before {
+	content: '';
+	display: inline-block;
+	width: 0;
+	height: 100%;
+	vertical-align: middle;
+}
+
+/* =============
 	Grid/Helpers
 ============= */
 .grid {
@@ -91,7 +126,7 @@
 }
 
 .center {
-	margin: 0 auto;
+	text-align: center;
 }
 
 /* =============
@@ -99,6 +134,7 @@
 ============= */
 html {
 	height: 100%;
+	width: 100%;
 }
 
 body {
@@ -108,11 +144,57 @@ body {
 	font-size: 14px;
 	color: white;
 	padding: 2rem;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
 }
 
 a {
 	text-decoration: none;
 	color: white;
+}
+
+.overlay-wrapper {
+	z-index: 996;
+	position:fixed; 
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	visibility: hidden;
+	background-color: rgba(0, 0, 0, .75);
+}
+
+.overlay {
+	position: absolute; 
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	padding: 2rem;
+	overflow: hidden;
+	background: black url('../img/bgimage.jpg');
+	background-size: cover;
+}
+
+.modal-content {
+	z-index: 999;
+}
+
+.modal-wrapper {
+	z-index: 999;
+	position: relative;
+}
+
+.blur {
+	filter: blur(3px); 
+	-webkit-filter: blur(3px); 
+	-moz-filter: blur(3px);
+	-o-filter: blur(3px); 
+	-ms-filter: blur(3px);
+	filter: url('blur.svg#blur');
+	filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='3'); 
 }
 
 /* =============
@@ -140,11 +222,13 @@ nav {
 nav li {
 	padding: .75rem;
 	display: block;
+	cursor: pointer;
 }
 
 nav li:hover {
 	margin-right: -3px;
 	border-right: 3px solid rgb(252, 220, 226);
+	color: rgb(252, 220, 226);
 }
 
 footer {
@@ -268,8 +352,8 @@ button {
 	margin-left: 3rem;
 	padding: 1rem;
 	width: 35%;
-	position: absolute;
 	bottom: 3rem;
+	position: fixed;
 }
 
 #content-main h2 {
@@ -283,15 +367,23 @@ button {
 
 .btn-book {
 	margin-top: 1.8rem;
+	position: relative;
 }
-
 
 /* =============
 	Booking 
 ============= */
+#booking-form,
+#booking-form fieldset {
+	width: 450px;
+}
+
+#booking-form fieldset {
+	overflow: hidden;
+}
+
 #booking-form {
 	position: relative;
-	width: 35%;
 	margin: 0 auto;
 	text-align: center;
 }
@@ -301,7 +393,6 @@ button {
 	padding: 1.5rem;
 	position: absolute;
 	background-color: rgba(252, 220, 226, .6);
-	height: 35rem;
 }
 
 #booking-form h2 {
