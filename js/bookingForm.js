@@ -50,6 +50,26 @@ function processAboutMe(form, fromEl, toEl) {
 	});
 }
 
+function processCoupon(fromEl, toEl) {
+	alert('In');
+	$.ajax({
+		url: 'booking.php',
+		type: 'POST',
+		data: {
+			function: 'applyCoupon',
+			member_id: $('#member_id').val(),
+			coupon: $('#coupon').val()
+		},
+		success: function(data) {
+			alert('in success '+data);
+			$('#coupon-result').html(data);
+			$('#coupon-result').css("display", "block");
+			// var price = data;
+			//TODO: Remember to handle logging the coupon use at the end of them actually applying it and paying
+		}
+	});
+}
+
 function resizeBookingFormToFieldset(fromEl, toEl) {
 	var wrap = toEl.parent();
 	var fromOrigHeight = fromEl.height();

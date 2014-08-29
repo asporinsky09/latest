@@ -2,30 +2,29 @@
 	<div class="vertical-align-wrapper center modal-wrapper">
 		<form id="booking-form" method="POST" class="vertical-center modal-content">
 			<fieldset>
-				<h2>Who are you</h2>
+				<h2>Tell us about you</h2>
 				<div class="grid clear">
 					<div class="col-2-5"><input type="text" name="fname" id="fname" placeholder="first" required></div>
 					<div class="col-3-5"><input type="text" name="lname" id="lname" placeholder="last" required></div>
 				</div>
 				<div class="grid clear">
-					<!-- TODO: Fix telephone input -->
 					<div class="col-1"><input type="tel" name="phone" id="phone" placeholder="phone number" required></div>
 				</div>
 				<div class="grid clear">
 					<div class="col-1"><input type="email" name="email" id="email" placeholder="email address" required></div>
 				</div>
 				<span id="emailerror" class="response clear">Email address already registered, please log in at top of page</span>
-				<!-- <span>Optional: Create a password so you can skip this next time</span> -->
-				<div class="grid clear">
-					<div class="col-1-2"><input type="password" name="newpw" id="newpw" placeholder="password" required></div>
-					<div class="col-1-2"><input type="password" name="cnewpw" id="cnewpw" placeholder="confirm" required></div>
+				<span>Optional: Create a password so you can skip this next time</span>
+				<div class="grid clear"> 
+					<div class="col-1-2"><input type="password" name="newpw" id="newpw" placeholder="password" required minlength="8"></div>
+					<div class="col-1-2"><input type="password" name="cnewpw" id="cnewpw" placeholder="confirm" required minlength="8"></div>
 				</div>
 				<span id="pwerror" class="response clear">Passwords do not match</span>
 				<button type="button" class="btn-booking-next btn-booking-only" onclick="processAboutMe(this.form, $(this).parent(), $(this).parent().next())">Next</button>
 			</fieldset>
 			<fieldset>
-				<h2>Choose a style</h2>
-				<input type="radio" name="product" id="blowout" value="blowout">
+				<h2>What can we do for you?</h2>
+				<input type="radio" name="product" id="blowout" value="blowout" required>
 				<label for="blowout">Blowout</label>
 				<input type="radio" name="product" id="braid" value="braid">
 				<label for="braid">Braid</label>
@@ -37,11 +36,11 @@
 					<span>Do you have a coupon?</span>
 					<div class="inside-button-wrapper" id="coupon-wrapper">
 						<input type="text" name="coupon" id="coupon" placeholder="coupon code" maxlength="18"class="inside-button-outer">
-						<button type="button" class="inside-button-button" id="coupon-apply">Apply</button>
+						<button type="button" class="inside-button-button" id="coupon-apply" onclick="processCoupon();">Apply</button>
 					</div>
 				</div>
-				<span class="form-sub-result">result</span>
-				<button type="button" class="btn-booking-next btn-booking-only">Where</button>
+				<span class="response" id="coupon-result"></span>
+				<button type="button" class="btn-booking-next btn-booking-only" onclick="advanceForm($(this).parent(), $(this).parent().next());">Where</button>
 			</fieldset>
 			<fieldset>
 				<h2>Where do we send our stylist?</h2>

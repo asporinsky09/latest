@@ -402,12 +402,11 @@ button {
 
 #booking-form span {
 	color: rgba(0, 0, 0, .65);
+	margin-bottom: 1rem;
+	font-size: 1.25rem;
 }
 
 .response {
-	margin-bottom: 1rem;
-	/*color: red;*/
-	font-size: 1.25rem;
 	font-weight: bold;
 	display: none;
 }
