@@ -18,20 +18,39 @@
 				echo storeMember($db, $email, $password, $salt, $first_name, $last_name, $phone);;
 				break;
 			case 'applyCoupon':
-				error_log("In php");
+				$member_id = $_SESSION['member_id'];
+				error_log('Recieved applyCoupon request for member_id: '.$member_id);
 				$couponCode = filter_input(INPUT_POST, 'coupon', FILTER_SANITIZE_STRING);
-				$member_id =  filter_input(INPUT_POST, 'member_id', FILTER_SANITIZE_STRING);
 				echo applyCoupon($db, $couponCode, 100, $member_id);
 				break;
+			case 'addAddress':
+				$member_id = $_SESSION['member_id'];
+				error_log('Recieved addAddress request for member_id: '.$member_id);
+				$address_id = filter_input(INPUT_POST, 'savedAddress', FILTER_SANITIZE_STRING);
+				if(!empty($address_id)) {
+					error_log('We have an existing address_id of '.$address_id);
+				} else {
+					$instruction = filter_input(INPUT_POST, 'instruction', FILTER_SANITIZE_STRING);
+					$address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
+					$aptnum = filter_input(INPUT_POST, 'aptnum', FILTER_SANITIZE_STRING);
+					$city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_STRING);
+					$state = filter_input(INPUT_POST, 'state', FILTER_SANITIZE_STRING);
+					$zip = filter_input(INPUT_POST, 'zip', FILTER_SANITIZE_STRING);
+					$instruction = filter_input(INPUT_POST, 'instruction', FILTER_SANITIZE_STRING);
+					echo addAddress($db, $member_id, $address, $aptnum, $city, $state, $zip, $instruction);
+				}
+				break;
 			default:
-				# code...
 				break;
 		}
 	}
 
+	function addAddress($db, $member_id, $address, $aptnum, $city, $state, $zip, $instruction) {
+		echo storeAddress($db, $member_id, $address, $aptnum, $city, $state, $zip, $instruction);
+	}
+
 	function applyCoupon($db, $couponCode, $originalPrice, $member_id) {
 		// TODO: Probably need to uppercase the code?
-		error_log('In Apply');
 		if($stmt = prepareStatement($db, "SELECT id, value, discount_type, max_uses, max_uses_per_user FROM coupons WHERE coupon_code = ? AND begin_date <= CURDATE() AND end_date >= CURDATE()")) {
 			$stmt->bind_param('s', $couponCode);
 			$stmt->execute();
@@ -49,7 +68,6 @@
 				if($result = checkOverMemberMaxUses($db, $max_per_user, $coupon_id, $couponCode, $member_id) != null) {
 					return $result;
 				}
-				error_log('Past the checks');
 				//TODO: Worry about coupon being applied more than once, handle that
 				//Good to go
 				return applyValidCoupon($couponCode, $coupon_id, $member_id, $originalPrice, $value, $discount_type);

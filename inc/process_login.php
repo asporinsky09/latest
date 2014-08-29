@@ -23,9 +23,9 @@ include_once 'Session.php';
 
 SecureSession::create(); // Our custom secure way of starting a PHP session.
 
-if (isset($_POST['email'], $_POST['password'])) {
+if (isset($_POST['email'], $_POST['cryptPass'])) {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $password = $_POST['password']; // The hashed password.
+    $password = $_POST['cryptPass']; // The hashed password.
     
     if (login($email, $password, $db) == true) {
         // Login success 

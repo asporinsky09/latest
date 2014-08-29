@@ -7,7 +7,7 @@ CREATE TABLE members (
 
 CREATE TABLE login_attempts (
 	member_id INT NOT NULL,
-	time VARCHAR(30) NOT NULL,
+	time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (member_id) REFERENCES members(id)
 ) ENGINE=InnoDB;
 
@@ -20,7 +20,9 @@ CREATE TABLE member_info (
 ) ENGINE=InnoDB;
 
 CREATE TABLE member_address (
+	address_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	member_id INT NOT NULL,
+	nickname VARCHAR(25),
 	street_address VARCHAR(100) NOT NULL,
 	apt_num VARCHAR(10),
 	city VARCHAR(100) NOT NULL,

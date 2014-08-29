@@ -11,7 +11,6 @@ function prepareStatement($db, $stmt) {
     }
     
 function login($email, $password, $db) {
-    error_log('got to login call');
     // Using prepared statements means that SQL injection is not possible. 
     if ($stmt = $db->prepare("SELECT id, password, salt 
         FROM members
@@ -24,10 +23,6 @@ function login($email, $password, $db) {
         // get variables from result.
         $stmt->bind_result($member_id, $db_password, $salt);
         $stmt->fetch();
-
-        error_log('answer: '.$db_password);
-        error_log('answer salt: '.$salt);
-        error_log('stmt->num_rows: '.$stmt->num_rows);
 
         if ($stmt->num_rows == 1) {
             // hash the password with the unique salt.
@@ -45,33 +40,24 @@ function login($email, $password, $db) {
             } else {
                 // Check if the password in the database matches
                 // the password the user submitted.
-                error_log('before check');
                 if ($db_password == $password) {
-                    error_log('in check');
-                    // Password is correct!
-                    // Get the user-agent string of the user.
                     $user_browser = $_SERVER['HTTP_USER_AGENT'];
-
                     // XSS protection as we might print this value
                     $member_id = preg_replace("/[^0-9]+/", "", $member_id);
                     $_SESSION['member_id'] = $member_id;
-
                     $_SESSION['login_verification_string'] = hash('sha512', $password . $user_browser);
-
-                    // Login successful. 
                     return true;
                 } else {
                     // Password is not correct
                     // We record this attempt in the database
-                    $now = time();
-                    $db->query("INSERT INTO login_attempts(member_id, time)
-                                    VALUES ('$member_id', '$now')");
+                    error_log('Invalid password provided for '.$member_id);
+                    $db->query("INSERT INTO login_attempts(member_id) VALUES ('$member_id')");
                     return false;
                 }
             }
         } else {
             // No user exists.
-            error_log('no user');
+            error_log('no user exists with email '.$email);
             return false;
         }
     }
@@ -107,8 +93,6 @@ function login_check($db) {
     if (isset($_SESSION['member_id'], $_SESSION['login_verification_string'])) {
         $member_id = $_SESSION['member_id'];
         $login_string = $_SESSION['login_verification_string'];
-
-        // Get the user-agent string of the user.
         $user_browser = $_SERVER['HTTP_USER_AGENT'];
 
         if ($stmt = $db->prepare("SELECT password 
@@ -124,7 +108,6 @@ function login_check($db) {
                 $stmt->bind_result($password);
                 $stmt->fetch();
                 $login_check = hash('sha512', $password . $user_browser);
-
                 return ($login_check == $login_string);
             } else {
                 // Not logged in 

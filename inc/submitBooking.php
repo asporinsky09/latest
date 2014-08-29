@@ -89,54 +89,7 @@
 		} 
 	}
 
-	function applyCoupon($couponCode, $originalPrice, $member_id) {
-		include_once 'Session.php';
-		SecureSession::create();
-		include_once 'dbConnect.php';
-
-		if($stmt = prepareStatement($db, "SELECT id, value, discount_type, max_uses, max_uses_per_user FORM coupons WHERE coupon_code = ? AND begin_date <= CURDATE() AND end_date >= CURDATE()")) {
-			$stmt->bind_param('s', $couponCode);
-			$stmt->execute();
-			$stmt->store_result();
-			$num_coupons = $stmt->num_rows;
- 	
-			if($num_coupons == 1) {
-				$stmt->bind_result($coupon_id, $value, $discount_type, $max_uses, $max_per_user);
-				$stmt->fetch();
-
-				if($max_uses > 0) {
-					if ($stmt = prepareStatement($db, "SELECT COUNT(*) FROM coupon_uses WHERE coupon_id = ?")) {
-						$stmt->bind_param('s', $coupon_id);
-						$stmt->execute();
-						$stmt->store_result();
-						$stmt->bind_result($uses);
-						$stmt->fetch();
-						if($uses >= $max_uses) {
-							return "Sorry coupon: ".$couponCode." is expired an no longer valid";
-						}
-					}
-				}
-				if($max_per_user > 0) {
-					if ($stmt = prepareStatement($db, "SELECT COUNT(*) FROM coupon_uses WHERE coupon_id = ? AND member_id = ?")) {
-						$stmt->bind_param('ss', $coupon_id);
-						$stmt->execute();
-						$stmt->store_result();
-						$stmt->bind_result($uses);
-						$stmt->fetch();
-						if($uses >= $max_uses) {
-							return "Sorry coupon: ".$couponCode." is expired an no longer valid";
-						}
-					}
-				}
-				//Good to go
-			} else if($num_coupons < 1) {
-				return "Sorry ".$couponCode." is not valid or expired";
-			} else {
-				error_log('More than one coupon returned for '.$couponCode);
-				return false;
-			}
-		}
-	}
+	
 
 	doBook();
 ?>

@@ -1,6 +1,16 @@
+<?php
+	include_once 'inc/functions.php';
+	include_once 'inc/dbConnect.php';
+	include_once 'inc/Session.php';
+	include_once 'inc/Member.php';
+
+	$logged_in = login_check($db);
+?>
+
 <div class="overlay-wrapper">
 	<div class="vertical-align-wrapper center modal-wrapper">
 		<form id="booking-form" method="POST" class="vertical-center modal-content">
+		<?php if(!$logged_in) { ?>
 			<fieldset>
 				<h2>Tell us about you</h2>
 				<div class="grid clear">
@@ -22,6 +32,7 @@
 				<span id="pwerror" class="response clear">Passwords do not match</span>
 				<button type="button" class="btn-booking-next btn-booking-only" onclick="processAboutMe(this.form, $(this).parent(), $(this).parent().next())">Next</button>
 			</fieldset>
+		<?php } ?>
 			<fieldset>
 				<h2>What can we do for you?</h2>
 				<input type="radio" name="product" id="blowout" value="blowout" required>
@@ -33,7 +44,7 @@
 				<input type="radio" name="product" id="package" value="package">
 				<label for="package">Package</label>
 				<div class="grid clear">
-					<span>Do you have a coupon?</span>
+					<span class="form-detail">Do you have a coupon?</span>
 					<div class="inside-button-wrapper" id="coupon-wrapper">
 						<input type="text" name="coupon" id="coupon" placeholder="coupon code" maxlength="18"class="inside-button-outer">
 						<button type="button" class="inside-button-button" id="coupon-apply" onclick="processCoupon();">Apply</button>
@@ -44,20 +55,35 @@
 			</fieldset>
 			<fieldset>
 				<h2>Where do we send our stylist?</h2>
+				<?php if($logged_in) { 
+					$member_id = $_SESSION['member_id'];
+					$options = getMemberAddressesAsOptions($db, $member_id);
+					if(!empty($options)) {
+				?>
+						<div class="grid clear">
+							<div class="col-1">
+								<select id="savedAddress" name="savedAddress">
+									<?php echo $options; ?>
+								</select>
+							</div>
+						</div>
+				<h2>or use a different address:</h2>
+				<?php } 
+				} ?>
 				<div class="grid clear">
 					<div class="col-4-5"><input type="text" name="streetAddress" id="streetAddress" placeholder="street address"></div>
 					<div class="col-1-5"><input type="text" name="aptnum" id="aptnum" placeholder="apt #" class="col-1-5"></div>
 				</div>
 				<div class="grid clear">
 					<div class="col-3-5"><input type="text" name="city" id="city" placeholder="city"></div>
-					<div class="col-1-5"><input type="text" name="state" id="state" placeholder="ST" length="2"></div>
-					<div class="col-1-5"><input type="text" name="zip" id="zip" placeholder="zip"></div>
+					<div class="col-15-pct"><input type="text" name="state" id="state" placeholder="st" length="2"></div>
+					<div class="col-1-4"><input type="text" name="zip" id="zip" placeholder="zip"></div>
 				</div>
 				<div class="grid clear">
 					<div class="col-1"><input type="text" name="instruction" id="instructions" placeholder="special instructions" class="col-1"></div>
 				</div>
 				<button type="button" class="btn-booking-back">Back</button>
-				<button type="button" class="btn-booking-next">When</button>
+				<button type="button" class="btn-booking-next" onclick="processAddress($(this).parent(), $(this).parent().next());">When</button>
 			</fieldset>
 			<fieldset>
 				<h2>When should we arrive?</h2>
@@ -69,9 +95,9 @@
 					<span class="fa fa-clock-o fa-3x col-1-3"></span>
 					<div class="col-2-3"><input type="text" name="time" id="time" placeholder="hh:mm AM"></div>
 				</div>
-				<span class="form-sub-result">result</span>
-					<button type="button" class="btn-booking-back">Back</button>
-					<button type="button" class="btn-booking-next">Payment</button>
+				<span class="response">result</span>
+				<button type="button" class="btn-booking-back">Back</button>
+				<button type="button" class="btn-booking-next" onclick="processApptTime($(this).parent(), $(this).parent().next());">Payment</button>
 			</fieldset>
 			<fieldset>
 				<h2>We'll need a credit card to schedule your appointment</h2>

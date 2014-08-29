@@ -20,8 +20,9 @@ include("components/pagebegin.php"); ?>
 	<script type="text/JavaScript" src="js/sha512.js"></script> 
     <script type="text/JavaScript" src="js/forms.js"></script>
     <script type="text/JavaScript" src="js/jquery-1.11.1.min.js"></script> 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.1/TweenLite.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.1/TimelineLite.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.1/plugins/CSSPlugin.min.js"></script>
+    <script src="js/TweenLite.min.js"></script>
+	<script src="js/TimelineLite.min.js"></script>
+	<script src="js/plugins/CSSPlugin.min.js"></script>
     <script type="text/javascript" src="js/bookingForm.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </html>

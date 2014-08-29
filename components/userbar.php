@@ -11,7 +11,7 @@ include_once 'inc/Session.php';
 				<fieldset>Welcome back</fieldset>
 				<input type="email" name="email" placeholder="Email Address">
 				<!-- <span class="inside-button-wrapper"> -->
-					<input type="text" name="password" placeholder="Password:" class="inside-button-outer">
+					<input type="password" name="password" placeholder="Password:" class="inside-button-outer">
 					<!-- <button id="forgot" type="button" class="inside-button-button">?</button> -->
 				<!-- </span> -->
 				<button type="submit" class="btn-login" onclick="secureSend(this.form, this.form.password); this.form.submit();">Log in</button>

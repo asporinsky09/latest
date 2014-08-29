@@ -51,7 +51,6 @@ function processAboutMe(form, fromEl, toEl) {
 }
 
 function processCoupon(fromEl, toEl) {
-	alert('In');
 	$.ajax({
 		url: 'booking.php',
 		type: 'POST',
@@ -61,13 +60,52 @@ function processCoupon(fromEl, toEl) {
 			coupon: $('#coupon').val()
 		},
 		success: function(data) {
-			alert('in success '+data);
 			$('#coupon-result').html(data);
 			$('#coupon-result').css("display", "block");
 			// var price = data;
 			//TODO: Remember to handle logging the coupon use at the end of them actually applying it and paying
 		}
 	});
+}
+
+function processAddress(fromEl, toEl) {
+	var address_id = $('#savedAddress').val();
+	var address = $('#streetAddress').val();
+	var aptnum = $('#aptnum').val();
+	var city = $('#city').val();
+	var state = $('#state').val();
+	var zip = $('#zip').val();
+	var instruction = $('#instruction').val();
+	if(address.length > 0) {
+		if(city.length <=0 || state.length <=0 || zip.length <=0) {
+			//TODO: Error handling
+			return false;
+		}
+		$.ajax({
+			url: 'booking.php',
+			type: 'POST',
+			data: {
+				function: 'addAddress',
+				address: address,
+				aptnum: aptnum,
+				city: city,
+				state: state,
+				zip: zip,
+				instruction: instruction
+			},
+			success: function(data) {
+				advanceForm(fromEl, toEl);
+			}
+		});
+	} else if(address_id.length > 0) {
+		advanceForm(fromEl, toEl);
+	} else {
+		return false;
+	}
+}
+
+function processApptTime(fromEl, toEl) {
+	advanceForm(fromEl, toEl);
 }
 
 function resizeBookingFormToFieldset(fromEl, toEl) {

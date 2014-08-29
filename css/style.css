@@ -108,6 +108,7 @@
 .col-2-5 { width: 40%; }
 .col-3-5 { width: 60%; }
 .col-4-5 { width: 80%; }
+.col-15-pct { width: 15%; }
 .col-1 { width: 100%; }
 
 .inside-button-wrapper,
@@ -402,6 +403,10 @@ button {
 
 #booking-form span {
 	color: rgba(0, 0, 0, .65);
+}
+
+.form-detail,
+.response {
 	margin-bottom: 1rem;
 	font-size: 1.25rem;
 }
@@ -465,6 +470,8 @@ button {
 	background-color: transparent;
 }
 
+select,
+option,
 #booking-form input[type="text"],
 #booking-form input[type="tel"],
 #booking-form input[type="email"],
@@ -476,6 +483,8 @@ button {
 }
 
 #booking-form button,
+select,
+option,
 #booking-form input[type="text"],
 #booking-form input[type="tel"],
 #booking-form input[type="email"],
