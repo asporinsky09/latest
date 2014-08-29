@@ -276,7 +276,7 @@ footer,
 /* =============
 	Typography
 ============= */
-h1, h2, button {
+h1, h2, button, span {
 	font-family: 'Neutra Text';
 }
 
@@ -404,6 +404,14 @@ button {
 	color: rgba(0, 0, 0, .65);
 }
 
+.response {
+	margin-bottom: 1rem;
+	/*color: red;*/
+	font-size: 1.25rem;
+	font-weight: bold;
+	display: none;
+}
+
 #booking-form .grid {
 	margin-bottom: 1rem;
 }
@@ -458,15 +466,21 @@ button {
 	background-color: transparent;
 }
 
-#booking-form input[type="text"] {
+#booking-form input[type="text"],
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"] {
 	background-color: rgba(0, 0, 0, .65);
 	width: 100%;
 	padding: 0 .75rem;
 	color: rgb(252, 220, 226);
 }
 
+#booking-form button,
 #booking-form input[type="text"],
-#booking-form button {
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"] {
 	line-height: 2.5rem;
 	font-size: 1.5rem;
 }

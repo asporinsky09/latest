@@ -21,9 +21,7 @@ include_once 'dbConnect.php';
 include_once 'functions.php';
 include_once 'Session.php';
 
-error_log('before create');
 SecureSession::create(); // Our custom secure way of starting a PHP session.
-error_log('after create');
 
 if (isset($_POST['email'], $_POST['password'])) {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);

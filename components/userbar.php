@@ -14,7 +14,7 @@ include_once 'inc/Session.php';
 					<input type="text" name="password" placeholder="Password:" class="inside-button-outer">
 					<!-- <button id="forgot" type="button" class="inside-button-button">?</button> -->
 				<!-- </span> -->
-				<button type="submit" class="btn-login" onclick="secureSend(this.form, this.form.password);">Log in</button>
+				<button type="submit" class="btn-login" onclick="secureSend(this.form, this.form.password); this.form.submit();">Log in</button>
 			</form>
 			<?php } else { ?>
 			<a href="inc/logout.php">Log Out</a>

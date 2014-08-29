@@ -1,6 +1,15 @@
 <?php 
 include_once 'bh-config.php';
 
+function prepareStatement($db, $stmt) {
+        if ($statement = $db->prepare($stmt)) {
+            return $statement;
+        } else {
+            error_log('Error preparing statement: '.$statement);
+            return false;
+        }
+    }
+    
 function login($email, $password, $db) {
     error_log('got to login call');
     // Using prepared statements means that SQL injection is not possible. 

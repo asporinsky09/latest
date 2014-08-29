@@ -1,3 +1,55 @@
+//TODO: Add jquery validate api
+
+function processAboutMe(form, fromEl, toEl) {
+	if($('#emailerror').css("display") != "none") {
+		$('#emailerror').css("display", "none");
+	}
+
+	var pass = $('#newpw').val();
+	var cpass = $('#cnewpw').val();
+	if(pass != cpass) {
+		$('#pwerror').css("display", "block");
+		$("input[type='password']").val('');
+		return false;
+	}
+	if($('#pwerror').css("display") != "none") {
+		$('#pwerror').css("display", "none");
+	}
+	var cryptPass = hex_sha512(pass);
+	
+	$.ajax({
+		url: 'booking.php',
+		type: 'POST',
+		data: {
+			function: 'storeMember',
+			fname: $('#fname').val(),
+			lname: $('#lname').val(),
+			phone: $('#phone').val(),
+			email: $('#email').val(),
+			cryptPass: cryptPass
+		},
+		success: function(data) {
+			if(data.indexOf("Error") != 0) {
+				if($('#emailerror').css("display") != "none") {
+					$('#emailerror').css("display", "none");
+				}
+				var member_id = parseInt(data);
+				var member = document.createElement("input");
+			    form.appendChild(member);
+			    member.name = "member_id";
+			    member.id = "member_id";
+			    member.type = "hidden";
+			    member.value = member_id;
+			    advanceForm(fromEl, toEl);
+			} else {
+				if(data.indexOf("already exists") >= 0) {
+					$('#emailerror').css("display", "block");
+				}
+			}
+		}
+	});
+}
+
 function resizeBookingFormToFieldset(fromEl, toEl) {
 	var wrap = toEl.parent();
 	var fromOrigHeight = fromEl.height();
@@ -18,10 +70,14 @@ function resizeBookingFormToFieldset(fromEl, toEl) {
 	.to(toEl, .5, {opacity:1}, "step1");
 }
 
+function advanceForm(fromEl, toEl) {
+	resizeBookingFormToFieldset(fromEl, toEl);
+}
 
-$(".btn-booking-next").click(function() {
-	resizeBookingFormToFieldset($(this).parent(), $(this).parent().next());
-});
+
+// $(".btn-booking-next").click(function() {
+// 	resizeBookingFormToFieldset($(this).parent(), $(this).parent().next());
+// });
 
 $(".btn-booking-back").click(function() {
 	resizeBookingFormToFieldset($(this).parent(), $(this).parent().prev());

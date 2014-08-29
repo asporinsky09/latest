@@ -16,7 +16,7 @@ include("components/pagebegin.php"); ?>
 			<?php include("components/footer.php"); ?>
 		</div>
 	</body>
-	<?php include("booking.php"); ?>
+	<?php include("booking-form.php"); ?>
 	<script type="text/JavaScript" src="js/sha512.js"></script> 
     <script type="text/JavaScript" src="js/forms.js"></script>
     <script type="text/JavaScript" src="js/jquery-1.11.1.min.js"></script> 
