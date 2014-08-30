@@ -20,9 +20,16 @@ include("components/pagebegin.php"); ?>
 	<script type="text/JavaScript" src="js/sha512.js"></script> 
     <script type="text/JavaScript" src="js/forms.js"></script>
     <script type="text/JavaScript" src="js/jquery-1.11.1.min.js"></script> 
+    <script type="text/JavaScript" src="js/jquery-ui.min.js"></script> 
+    <link rel="stylesheet" type="text/css" href="js/jquery-ui.min.css">
     <script src="js/TweenLite.min.js"></script>
 	<script src="js/TimelineLite.min.js"></script>
 	<script src="js/plugins/CSSPlugin.min.js"></script>
     <script type="text/javascript" src="js/bookingForm.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+	    $(function() {
+	    	$( "#date" ).datepicker({minDate: 0});
+	    });
+	</script>
 </html>

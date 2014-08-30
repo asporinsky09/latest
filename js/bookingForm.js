@@ -108,6 +108,11 @@ function processApptTime(fromEl, toEl) {
 	advanceForm(fromEl, toEl);
 }
 
+function attachDatePicker(nearEl) {
+	var picker = $('#ui-datepicker-div');
+	picker.detach().insertAfter(nearEl);
+}
+
 function resizeBookingFormToFieldset(fromEl, toEl) {
 	var wrap = toEl.parent();
 	var fromOrigHeight = fromEl.height();
@@ -132,17 +137,14 @@ function advanceForm(fromEl, toEl) {
 	resizeBookingFormToFieldset(fromEl, toEl);
 }
 
-
-// $(".btn-booking-next").click(function() {
-// 	resizeBookingFormToFieldset($(this).parent(), $(this).parent().next());
-// });
-
 $(".btn-booking-back").click(function() {
 	resizeBookingFormToFieldset($(this).parent(), $(this).parent().prev());
 });
 
 $(document).click(function(event) { 
-    if(!$(event.target).closest('#booking-form').length) {
+    if(!(($(event.target).closest('#booking-form').length) 
+    	|| $(event.target).is('[class^="ui-"]'))) {
+    	//TODO: That ui- check thing is troublesome... I couldn't find a better way to do this, since that ui element had no parent
         if($('.overlay-wrapper').css("visibility") == "visible") {
             $('.overlay-wrapper').css({visibility:"hidden"});
             $('body').removeClass('blur');

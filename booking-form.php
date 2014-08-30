@@ -50,7 +50,9 @@
 						<button type="button" class="inside-button-button" id="coupon-apply" onclick="processCoupon();">Apply</button>
 					</div>
 				</div>
-				<span class="response" id="coupon-result"></span>
+				<div class="grid clear">
+					<span class="response col-1" id="coupon-result"></span>
+				</div>
 				<button type="button" class="btn-booking-next btn-booking-only" onclick="advanceForm($(this).parent(), $(this).parent().next());">Where</button>
 			</fieldset>
 			<fieldset>
@@ -89,7 +91,7 @@
 				<h2>When should we arrive?</h2>
 				<div class="grid clear">
 					<span class="fa fa-calendar fa-3x col-1-3"></span>
-					<div class="col-2-3"><input type="text" name="date" id="date" placeholder="mm/dd/yyyy"></div>
+					<div class="col-2-3"><input type="text" name="date" id="date" placeholder="mm/dd/yyyy" onclick="attachDatePicker($(this));"></div>
 				</div>
 				<div class="grid clear">
 					<span class="fa fa-clock-o fa-3x col-1-3"></span>

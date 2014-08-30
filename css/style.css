@@ -517,3 +517,8 @@ option,
 #booking-form fieldset:not(:first-of-type) {
 	display: none;
 }
+
+#date {
+	position: relative;
+	z-index: 999;
+}
