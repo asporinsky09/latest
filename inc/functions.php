@@ -27,9 +27,6 @@ function login($email, $password, $db) {
         if ($stmt->num_rows == 1) {
             // hash the password with the unique salt.
             $password = hash('sha512', $password . $salt);
-            
-            error_log('actual: '.$db_password);
-            error_log('expected: '.$password);
             // If the user exists we check if the account is locked
             // from too many login attempts 
             if (checkbrute($member_id, $db) == true) {

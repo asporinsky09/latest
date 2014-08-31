@@ -18,7 +18,7 @@ function processAboutMe(form, fromEl, toEl) {
 	var cryptPass = hex_sha512(pass);
 	
 	$.ajax({
-		url: 'booking.php',
+		url: 'services/booking.php',
 		type: 'POST',
 		data: {
 			function: 'storeMember',
@@ -50,22 +50,50 @@ function processAboutMe(form, fromEl, toEl) {
 	});
 }
 
+//TODO: Change this to return json object with coupon_id, adjustment, error
 function processCoupon(fromEl, toEl) {
-	$.ajax({
-		url: 'booking.php',
-		type: 'POST',
-		data: {
-			function: 'applyCoupon',
-			member_id: $('#member_id').val(),
-			coupon: $('#coupon').val()
-		},
-		success: function(data) {
-			$('#coupon-result').html(data);
-			$('#coupon-result').css("display", "block");
-			// var price = data;
-			//TODO: Remember to handle logging the coupon use at the end of them actually applying it and paying
-		}
-	});
+	$('#coupon-result').css("display", "none");
+	var price = $('#cart-price').html().substr(1);
+	if(price) {
+		var coupon = $('#coupon').val(); 
+		$.ajax({
+			url: 'services/booking.php',
+			type: 'POST',
+			data: {
+				function: 'applyCoupon',
+				member_id: $('#member_id').val(),
+				coupon: coupon,
+				price: price
+			},
+			success: function(data) {
+				var result = $.parseJSON(data);
+				if (result.error.length > 0) {
+					$('#coupon-result').html(result.error);
+					$('#coupon-result').css("display", "block");
+				} else {
+					$('#cart-coupon-label').html('<span class="remove-coupon" onclick="$(\'#cart-coupon\').html(\'\'); $(\'#cart-coupon-adjust\').html(\'\'); $(\'#cart-coupon-label\').html(\'\');">X</span> Coupon');
+					$('#cart-coupon').html(coupon);
+					$('#cart-coupon-adjust').html('- $' + parseFloat(result.adjust).toFixed(2));
+					appendHidden('coupon_id', result.id);
+					calculatePrice();
+				}
+				// var price = data;
+				//TODO: Remember to handle logging the coupon use at the end of them actually applying it and paying
+			}
+		});
+	}
+}
+
+function calculatePrice() {
+	var adjust = 0;
+	var price = $('#cart-price').html().substr($('#cart-price').html().indexOf('$') + 1);
+	var rawAdjust = $('#cart-coupon-adjust').html();
+	if(rawAdjust) {
+		adjust = rawAdjust.substr(rawAdjust.indexOf('$') + 1);
+	}
+	var total = (parseFloat(price) - parseFloat(adjust)).toFixed(2);
+	$('#cart-total').html("$"+total);
+	appendHidden('total_price', total);
 }
 
 function processAddress(fromEl, toEl) {
@@ -82,7 +110,7 @@ function processAddress(fromEl, toEl) {
 			return false;
 		}
 		$.ajax({
-			url: 'booking.php',
+			url: 'services/booking.php',
 			type: 'POST',
 			data: {
 				function: 'addAddress',
@@ -94,18 +122,76 @@ function processAddress(fromEl, toEl) {
 				instruction: instruction
 			},
 			success: function(data) {
+				if(data) {
+					appendHidden('address_id', data);
+				}
 				advanceForm(fromEl, toEl);
 			}
 		});
 	} else if(address_id.length > 0) {
+		appendHidden('address_id', address_id);
 		advanceForm(fromEl, toEl);
 	} else {
 		return false;
 	}
 }
 
+function appendHidden(name, data) {
+	var hidden;
+	if(!$('#booking-form').has('#'+name).length > 0) {
+		hidden = $('<input>');
+		hidden.attr('type','hidden');
+		hidden.attr('id', name);
+		hidden.attr('name', name);
+	    hidden.appendTo($('#booking-form'));
+	}
+	$('#'+name).val(data);
+}
+
 function processApptTime(fromEl, toEl) {
 	advanceForm(fromEl, toEl);
+}
+
+function updatePrice(selectedEl) {
+	var product = selectedEl.val();
+	$.ajax({
+		url: 'services/booking.php',
+		type: 'POST',
+		data: {
+			function: 'getPrice',
+			product: product
+		},
+		success: function(data) {
+			var result = $.parseJSON(data);
+			$('#cart-product').html(product);
+			$('#cart-price').html('$' + parseFloat(result.price).toFixed(2));
+			calculatePrice();
+		}
+	});
+}
+
+function completeBooking() {
+	$.ajax({
+		url: 'services/booking.php',
+		type: 'POST',
+		data: {
+			function: 'doBooking',
+			price: $('#total_price').val().substr($('#total_price').val().indexOf('$') + 1),
+			product: $('input[name=product]').val(),
+			coupon_id: $('#coupon_id').val(),
+			address: $('#address_id').val(),
+			date: $('#date').val(),
+			time: $('#time').val(),
+			ccnum: $('#ccnum').val(),
+			ccexp: $('#expiry').val(),
+			cvv: $('#cvv').val()
+		},
+		success: function(data) {
+			alert(data);
+			return false;
+		}
+	});
+	return false;
 }
 
 function attachDatePicker(nearEl) {
@@ -126,7 +212,7 @@ function resizeBookingFormToFieldset(fromEl, toEl) {
 		fromEl.height(fromOrigHeight);
 		fromEl.hide();
 		fromEl.css('opacity', '1');
-		
+		toEl.css('height', 'auto');
 	}});	
 	myTimeline.to(fromEl, .5, {opacity:0,height:toHeight,left:toLeft,top:toTop}, "step1")
 	.to(wrap, .5, {height:toHeight,left:toLeft,top:toTop}, "step1")

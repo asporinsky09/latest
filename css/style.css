@@ -522,3 +522,17 @@ option,
 	position: relative;
 	z-index: 999;
 }
+
+#booking-product {
+	margin-bottom: 1rem;
+	padding-bottom: 1rem;
+	border-bottom: 2px solid rgba(0, 0, 0, .6);
+}
+
+#price-detail td:first-of-type {
+	text-align: left;
+}
+
+#price-detail td:last-of-type {
+	text-align: right;
+}

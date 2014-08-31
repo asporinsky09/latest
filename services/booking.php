@@ -4,6 +4,9 @@
 	include_once '../inc/dbConnect.php';
 	include_once '../inc/Authorize.php';
 	include_once '../inc/Product.php';
+	include_once '../inc/Order.php';
+	include_once '../inc/Appointment.php';
+	include_once '../inc/Coupon.php';
 	SecureSession::create();
 
 	if(isset($_POST['function']) && !empty($_POST['function'])) {
@@ -16,11 +19,12 @@
 				$pass = filter_input(INPUT_POST, 'cryptPass', FILTER_SANITIZE_STRING);
 				$salt = hash('sha512', uniqid(openssl_random_pseudo_bytes(16), TRUE));
         		$password = hash('sha512', $pass . $salt);
-				echo storeMember($db, $email, $password, $salt, $first_name, $last_name, $phone);;
+        		$member_id = storeMember($db, $email, $password, $salt, $first_name, $last_name, $phone);
+        		$_SESSION['member_id'] = $member_id;
+				echo $member_id;
 				break;
 			case 'applyCoupon':
 				$member_id = $_SESSION['member_id'];
-				error_log('Recieved applyCoupon request for member_id: '.$member_id);
 				$couponCode = filter_input(INPUT_POST, 'coupon', FILTER_SANITIZE_STRING);
 				$price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_STRING);
 				echo applyCoupon($db, $couponCode, $price, $member_id);
@@ -39,13 +43,12 @@
 				break;
 			case 'getPrice': //TODO: Move this stuff to a product class or product dao class
 				$product = filter_input(INPUT_POST, 'product', FILTER_SANITIZE_STRING);
-				error_log('product recd as: '.$product);
 				echo getPrice($db, $product);
 				break;
 			case 'doBooking':
 				$member_id = $_SESSION['member_id'];
 				$address_id = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
-				$coupon = filter_input(INPUT_POST, 'coupon', FILTER_SANITIZE_STRING);
+				$coupon = filter_input(INPUT_POST, 'coupon_id', FILTER_SANITIZE_STRING);		
 				$date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
 				$time = filter_input(INPUT_POST, 'time', FILTER_SANITIZE_STRING);
 				$ccnum = filter_input(INPUT_POST, 'ccnum', FILTER_SANITIZE_STRING);
@@ -60,17 +63,25 @@
 		}
 	}
 
-	function doBooking($db, $member_id, $address_id, $coupon, $product, $price, $date, $time, $ccnum, $ccexp, $cvv) {
+	function doBooking($db, $member_id, $address_id, $coupon_id, $product, $price, $date, $time, $ccnum, $ccexp, $cvv) {
 		//TODO: get member name, get product name
         $member = getMemberDetails($db, $member_id);
         if($member) {
         	$transResult = processTransaction($member['fname'], $member['lname'], $product, $price, $ccnum, $ccexp, $cvv);
-        	if($transResult) {
+        	if($transResult==0 || $transResult) {
         		if ($transResult == 'Declined') {
         			error_log('Transaction declined for member_id ' . $member_id);
         			return $transResult;
         		} else {
-
+    				$product_id = getIdForProduct($db, $product);
+    				$order_id = storeOrder($db, $member_id, $product_id, $transResult, $coupon_id, $price);
+    				if($order_id) {
+    					storeAppointment($db, $member_id, $product_id, $address_id, $date, $time, $order_id);
+    					storeCouponUse($db, $member_id, $coupon_id);
+    					return 'Success';
+    				} else {
+    					error_log('Could not insert order, cannot book for member_id ' . $member_id);
+    				}
         		}
         	} else {
         		error_log('Transaction returned an error cannot book for member_id ' . $member_id);
@@ -78,10 +89,6 @@
         } else {
         	error_log('Member does not exist with id ' . $member_id . ' cannot process transaction');
         }        
-	}
-
-	function storeOrderAndAppointment($db, $member_id, $address_id, $coupon, $product, $price, $date, $time, $transId) {
-		
 	}
 
 	function getPrice($db, $productName) {
@@ -94,8 +101,7 @@
 				$stmt->fetch();
 				$result['product_id'] = $product_id;
 				$result['price'] = $price;
-				echo json_encode($result);
-				// echo "{\"product_id\":".$product_id.", \"price\":".$price."}";
+				return json_encode($result);
 			}
 		}
 		return false;
@@ -123,17 +129,17 @@
 				$stmt->fetch();
 
 				$result;
-				if($result = checkForOverMaxUses($db, $max_uses, $coupon_id, $couponCode) != null) {
-					return $result;
+				if($result = checkForOverMaxUses($db, $max_uses, $coupon_id, $couponCode)) {
+					return json_encode(array('id' => '', 'adjust' => '', 'error' => $result));
 				}
-				if($result = checkOverMemberMaxUses($db, $max_per_user, $coupon_id, $couponCode, $member_id) != null) {
-					return $result;
+				if($result = checkOverMemberMaxUses($db, $max_per_user, $coupon_id, $couponCode, $member_id)) {
+					return json_encode(array('id' => '', 'adjust' => '', 'error' => $result));
 				}
 				//TODO: Worry about coupon being applied more than once, handle that
 				//Good to go
 				return applyValidCoupon($couponCode, $coupon_id, $member_id, $originalPrice, $value, $discount_type);
 			} else if($num_coupons < 1) {
-				return "Sorry ".$couponCode." is not valid or expired";
+				return json_encode(array('id' => '', 'adjust' => '', 'error' => "Sorry, ".$couponCode." is not valid or expired"));
 			} else {
 				error_log('More than one coupon returned for '.$couponCode);
 				return false;
@@ -153,24 +159,22 @@
 				break;
 			default:
 				error_log($member_id.'triggered incorrect coupon type, either db has typo, or something is wrong: '.$discount_type.', coupon_id: '.$coupon_id.', coupon code: '.$couponCode);
-				return "Sorry that coupon is invalid";
+				return "Sorry, that coupon is invalid";
 		}
-
-		//TODO: Style as a li and do something nice
-		return $priceAdjust;
+		return json_encode(array('id' => $coupon_id, 'adjust' => $priceAdjust, 'error' => '')); 
 	}
 
 	function checkForOverMaxUses($db, $max_uses, $coupon_id, $couponCode) {
 		$result = null;
 		if($max_uses > 0) {
-			if ($stmt = prepareStatement($db, "SELECT COUNT(*) FROM coupon_uses WHERE coupon_id = ?")) {
-				$stmt->bind_param('s', $coupon_id);
+			if ($stmt = prepareStatement($db, "SELECT COUNT(*) FROM coupon_use WHERE coupon_id = ?")) {
+				$stmt->bind_param('i', $coupon_id);
 				$stmt->execute();
 				$stmt->store_result();
 				$stmt->bind_result($uses);
 				$stmt->fetch();
 				if($uses >= $max_uses) {
-					$result = "Sorry coupon: ".$couponCode." is expired ans no longer valid";
+					$result = "Sorry, coupon ".$couponCode." is expired and no longer valid";
 				}
 			}
 		}
@@ -180,14 +184,14 @@
 	function checkOverMemberMaxUses($db, $max_per_user, $coupon_id, $couponCode, $member_id) {
 		$result = null;
 		if($max_per_user > 0) {
-			if ($stmt = prepareStatement($db, "SELECT COUNT(*) FROM coupon_uses WHERE coupon_id = ? AND member_id = ?")) {
-				$stmt->bind_param('ss', $coupon_id, $member_id);
+			if ($stmt = prepareStatement($db, "SELECT COUNT(*) FROM coupon_use WHERE coupon_id = ? AND member_id = ?")) {
+				$stmt->bind_param('ii', $coupon_id, $member_id);
 				$stmt->execute();
 				$stmt->store_result();
 				$stmt->bind_result($uses);
 				$stmt->fetch();
-				if($uses >= $max_uses) {
-					$result = "Sorry coupon: ".$couponCode." can only be used ".$max_per_user." time".($uses==1 ? "" : "s")."per member";
+				if($uses >= $max_per_user) {
+					$result = "Sorry, coupon ".$couponCode." can only be used ".$max_per_user." time".($uses==1 ? "" : "s");
 				}
 			}
 		}
