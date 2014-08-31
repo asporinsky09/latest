@@ -68,7 +68,7 @@
         $member = getMemberDetails($db, $member_id);
         if($member) {
         	$transResult = processTransaction($member['fname'], $member['lname'], $product, $price, $ccnum, $ccexp, $cvv);
-        	if($transResult==0 || $transResult) {
+        	if($transResult==0 || $transResult) {  //HARDCODE
         		if ($transResult == 'Declined') {
         			error_log('Transaction declined for member_id ' . $member_id);
         			return $transResult;

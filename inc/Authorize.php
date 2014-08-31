@@ -45,6 +45,7 @@
         }
 
         $responseCode = $data[1];
+        error_log('response code was ' . $responseCode);
         if ($responseCode == 1) {
         	if(! $data[10] == $price) {
         		error_log('Price from authorize of ' . $data[10] . ' does not match given price of ' . $price);

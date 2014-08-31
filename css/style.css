@@ -139,8 +139,6 @@ html {
 }
 
 body {
-	background: black url('../img/bgimage.jpg');
-	background-size: cover;
 	font-family: 'Neutra Display';
 	font-size: 14px;
 	color: white;
@@ -164,7 +162,7 @@ a {
 	height: 100%;
 	pointer-events: none;
 	visibility: hidden;
-	background-color: rgba(0, 0, 0, .75);
+	background-color: rgba(0, 0, 0, .65);
 }
 
 .overlay {
@@ -175,7 +173,8 @@ a {
 	height: 100%;
 	padding: 2rem;
 	overflow: hidden;
-	background: black url('../img/bgimage.jpg');
+	background: black url('../img/bg.jpg');
+	background-position: right center;
 	background-size: cover;
 }
 
@@ -189,13 +188,13 @@ a {
 }
 
 .blur {
-	filter: blur(3px); 
-	-webkit-filter: blur(3px); 
-	-moz-filter: blur(3px);
-	-o-filter: blur(3px); 
-	-ms-filter: blur(3px);
+	filter: blur(8px); 
+	-webkit-filter: blur(8px); 
+	-moz-filter: blur(8px);
+	-o-filter: blur(8px); 
+	-ms-filter: blur(8px);
 	filter: url('blur.svg#blur');
-	filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='3'); 
+	filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='8'); 
 }
 
 /* =============
@@ -277,7 +276,7 @@ footer,
 /* =============
 	Typography
 ============= */
-h1, h2, button, span {
+h1, h2, h3, button, span {
 	font-family: 'Neutra Text';
 }
 
@@ -396,9 +395,18 @@ button {
 	background-color: rgba(252, 220, 226, .6);
 }
 
+#booking-form #booking-success {
+	width: 100%;
+	position: absolute;
+}
+
 #booking-form h2 {
 	font-size: 2.25rem;
 	margin-bottom: 2rem;
+}
+
+#booking-form h3 {
+	font-size: 1.5rem;
 }
 
 #booking-form span {
@@ -535,4 +543,37 @@ option,
 
 #price-detail td:last-of-type {
 	text-align: right;
+}
+
+#booking-success {
+	/*display: none;*/
+}
+
+#booking-success section:first-of-type {
+	background-color: rgba(252, 220, 226, .6);
+	padding: 3.5rem 1.5rem;
+}
+
+#booking-success section:first-of-type h2 {
+	color: rgba(0, 0, 0, .6);
+}
+
+#booking-success section:last-of-type {
+	background-color: transparent;
+	padding: 3.5rem 1.5rem;
+}
+
+#booking-success section:last-of-type h2 {
+	color: rgba(252, 220, 226, .6);
+	font-weight: lighter;
+	font-family: 'Neutra Display';
+	font-size: 2.5rem;
+}
+
+#booking-success h3 {
+	color: rgba(0, 0, 0, .6);
+}
+
+#booking-form fieldset:first-of-type {
+	display: none;
 }

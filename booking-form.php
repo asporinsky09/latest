@@ -9,7 +9,8 @@
 
 <div class="overlay-wrapper">
 	<div class="vertical-align-wrapper center modal-wrapper">
-		<form id="booking-form" method="POST" class="vertical-center modal-content">
+		<form id="booking-form" class="vertical-center modal-content">
+			<form>
 		<?php if(!$logged_in) { ?>
 			<fieldset>
 				<h2>Tell us about you</h2>
@@ -134,8 +135,17 @@
 					<div class="col-1-5"><input type="text" name="cvv" id="cvv" placeholder="CVV"></div>
 				</div>
 				<button type="button" class="btn-booking-back">Back</button>
-				<button type="button" class="btn-booking-next" onclick="completeBooking();">Book</button>
+				<button type="button" class="btn-booking-next" onclick="completeBooking($(this).parent());">Book</button>
 			</fieldset>
+			<div id="booking-success">
+				<section>
+					<h2>Thanks for using Blohaute!</h2>
+					<h3>See you on <span id="timedateresult"></span></h3>
+				</section>
+				<section>
+					<h2>be gorgeous</h2>
+				</section>
+			</div>
 		</form>
 	</div>
 </div>

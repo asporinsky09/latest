@@ -148,6 +148,12 @@ function appendHidden(name, data) {
 	$('#'+name).val(data);
 }
 
+function removeHidden(name) {
+	if($('#booking-form').has('#'+name).length > 0) {
+		$('#'+name).remove();
+	}
+}
+
 function processApptTime(fromEl, toEl) {
 	advanceForm(fromEl, toEl);
 }
@@ -170,7 +176,7 @@ function updatePrice(selectedEl) {
 	});
 }
 
-function completeBooking() {
+function completeBooking(fromEl) {
 	$.ajax({
 		url: 'services/booking.php',
 		type: 'POST',
@@ -187,7 +193,11 @@ function completeBooking() {
 			cvv: $('#cvv').val()
 		},
 		success: function(data) {
-			alert(data);
+			if(data.indexOf("Success") == 0) {
+				$('#timedateresult').html($('#date').val() + ' at ' + $('#time').val());
+				advanceForm(fromEl, $('#booking-success'));
+			}
+			//TODO: feedback into a result div
 			return false;
 		}
 	});
@@ -234,9 +244,27 @@ $(document).click(function(event) {
         if($('.overlay-wrapper').css("visibility") == "visible") {
             $('.overlay-wrapper').css({visibility:"hidden"});
             $('body').removeClass('blur');
+            resetBookingForm();
         }
     }        
 });
+
+function resetBookingForm() {
+	if($('#booking-success').css('display') != 'none') {
+    	$('#booking-form')[0].reset();
+    	$('#booking-form fieldset:first-of-type').show();
+    	$('#booking-success').hide();
+    	removeHidden('coupon_id');
+    	removeHidden('address_id');
+    	removeHidden('total_price');
+    	$('#cart-product').html('');
+    	$('#cart-price').html('');
+    	$('#cart-coupon-label').html('');
+    	$('#cart-coupon').html('');
+    	$('#cart-coupon-adjust').html('');
+    	$('#cart-total').html('-');
+    }
+}
 
 function morphBookingForm(fromEl) {
 	var invisEl = $('.overlay-wrapper');
@@ -274,4 +302,3 @@ function morphBookingForm(fromEl) {
 
 	return true;
 }
-
