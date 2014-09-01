@@ -21,4 +21,38 @@
 			return false;
 		}
 	}
+
+	function getAppointmentsForMember($db, $member_id) {
+		$result = array();
+		if($stmt = prepareStatement($db, "SELECT p.product_name, ma.street_address, ma.apt_num, ma.city, ma.state, ma.zip, a.scheduled_date, a.scheduled_time"
+			." FROM appointments a INNER JOIN products p ON a.product_id = p.product_id"
+			." INNER JOIN member_address ma ON ma.address_id = a.address_id"
+			." WHERE a.member_id=?"
+			." AND a.scheduled_date >= CURDATE()")) {
+			$stmt->bind_param('s', $member_id);
+			$stmt->execute();
+			$stmt->store_result();
+			if($stmt->num_rows > 0) {
+				$stmt->bind_result($product, $address, $aptNum, $city, $state, $zip, $date, $time);
+				$i = 0;
+				while ($row = $stmt->fetch()) {
+					$appointment = array('product' => $product, 'address' => $address, 'aptnum' => $aptNum, 'city' => $city,
+					 'state' => $state, 'zip' => $zip, 'date' => $date, 'time' => $time);
+					$result[$i] = $appointment;
+					$i++;
+				}
+			}
+		}
+		return $result;	
+	}
+
+	function formatAppointment($appointment) {
+		$apt = ($appointment['aptnum'] ? 'Apt: '.$appointment['aptnum'] : '');
+		return '<li class="appointment-entry">'.
+			'<h3>'.$appointment['date'].'</h3>'.
+			'<span>'.$appointment['product'].' at '.$appointment['time'].'</span>'.
+			'<span>'.$appointment['address'].' '.$apt.'</span>'.
+			'<span>'.$appointment['city'].', '.$appointment['state'].' '.$appointment['zip'].'</span>'.
+		'</li>';
+	}
 ?>

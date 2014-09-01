@@ -213,8 +213,6 @@ function resizeBookingFormToFieldset(fromEl, toEl) {
 	var wrap = toEl.parent();
 	var fromOrigHeight = fromEl.height();
 	var toHeight = toEl.outerHeight();
-	var toLeft = toEl.position().left;
-	var toTop = toEl.position().top;
 
 	toEl.css('opacity', '0');
 	toEl.show();
@@ -224,8 +222,8 @@ function resizeBookingFormToFieldset(fromEl, toEl) {
 		fromEl.css('opacity', '1');
 		toEl.css('height', 'auto');
 	}});	
-	myTimeline.to(fromEl, .5, {opacity:0,height:toHeight,left:toLeft,top:toTop}, "step1")
-	.to(wrap, .5, {height:toHeight,left:toLeft,top:toTop}, "step1")
+	myTimeline.to(fromEl, .5, {opacity:0,height:toHeight}, "step1")
+	.to(wrap, .5, {height:toHeight}, "step1")
 	.to(toEl, .5, {opacity:1}, "step1");
 }
 

@@ -9,10 +9,17 @@
 			if($stmt->num_rows == 1) {
 				$stmt->bind_result($firstName, $lastName, $email, $phone);
 				$stmt->fetch(); 
-				return array('fname' => $firstName, 'lname' => $lastName, 'email' => $email, 'phone' => $phone);
+				return array('fname' => $firstName, 'lname' => $lastName, 'email' => $email, 'phone' => format_telephone($phone));
 			}
 		}
 		return false;	
+	}
+
+	function format_telephone($phone)
+	{
+	    $cleaned = preg_replace('/[^[:digit:]]/', '', $phone);
+	    preg_match('/(\d{3})(\d{3})(\d{4})/', $cleaned, $matches);
+	    return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
 	}
 
 	function getMemberId($db, $email) {
@@ -61,7 +68,6 @@
 				error_log('Error inserting member_address '.$db->error);
 				return false;
 			} 
-			error_log('Verify: '.$db->insert_id);
 			return $db->insert_id;
 		} else {
 			error_log('Couldnt query');

@@ -5,8 +5,8 @@ include("components/pagebegin.php"); ?>
 		<div class="overlay">
 			<header class="clear">
 				<a href="index.php"><h1 class="logo">blohaute</h1></a>
-				<?php include("components/userbar.php"); ?>
 			</header>
+			<?php include("components/userbar.php"); ?>
 			<?php include("components/nav.php"); ?>
 			<section id="content-main">
 				<h2>this is blohaute</h2>
@@ -27,6 +27,7 @@ include("components/pagebegin.php"); ?>
 	<script src="js/TimelineLite.min.js"></script>
 	<script src="js/plugins/CSSPlugin.min.js"></script>
     <script type="text/javascript" src="js/bookingForm.js"></script>
+    <script type="text/javascript" src="js/userForm.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
 	    $(function() {

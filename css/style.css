@@ -86,6 +86,10 @@
 	width: 100%;
 }
 
+.row {
+	padding-top: .5rem;
+	padding-bottom: .5rem;
+}
 [class*='col-'] {
 	float: left;
 	padding-right: .5rem;
@@ -99,6 +103,14 @@
   padding-left: .5rem;
 }
 
+.col-no-outer-pad:first-of-type {
+	padding-left: 0;
+}
+
+.col-no-outer-pad:last-of-type {
+	padding-right: 0;
+}
+
 .col-1-3 { width: 33.33%; }
 .col-2-3 { width: 66.67%; }
 .col-1-4 { width: 25%; }
@@ -110,6 +122,14 @@
 .col-4-5 { width: 80%; }
 .col-15-pct { width: 15%; }
 .col-1 { width: 100%; }
+.col-1-10 { width: 10%; }
+.col-3-10 { width: 30%; }
+.col-7-10 { width: 70%; }
+.col-9-10 { width: 90%; }
+
+.col-last {
+	float: right;
+}
 
 .inside-button-wrapper,
 .inside-button-outer {
@@ -173,7 +193,7 @@ a {
 	height: 100%;
 	padding: 2rem;
 	overflow: hidden;
-	background: black url('../img/bg.jpg');
+	background: black url('../img/fbg.jpg');
 	background-position: right center;
 	background-size: cover;
 }
@@ -205,13 +225,15 @@ a {
 	margin-bottom: 3rem;
 }
 
-.login {
+.userbar {
+	top: 2rem;
 	right: 2rem;
+	height: 3.5rem;
 	position: fixed;
 }
 
-header fieldset {
-	display: inline;
+.login {
+	padding: 0 .25rem;
 }
 
 nav {
@@ -244,16 +266,28 @@ footer img {
 	margin: .5rem 1rem .5rem 0;
 }
 
+input {
+	padding: .25rem .5rem;
+}
+
 nav,
 footer,
-.login {
+.userbar {
 	background-color: rgba(0, 0, 0, .45);
 }
 
-.login input,
+.userbar input,
+.login button {
+	line-height: 2rem;
+	font-size: 1.5rem;
+}
+
+.userbar input {
+	background-color: rgba(252, 220, 226, .65);
+}
+
 .login button {
 	background-color: rgb(252, 220, 226);
-	line-height: 1.5rem;
 }
 
 #forgot {
@@ -280,6 +314,10 @@ h1, h2, h3, button, span {
 	font-family: 'Neutra Text';
 }
 
+span {
+	font-size: 1.25rem;
+}
+
 fieldset,
 input,
 .btn-login,
@@ -294,11 +332,6 @@ input,
 
 nav li {
 	font-size: 2.4rem;
-}
-
-.login {padding: 1rem;}
-.login fieldset {
-	font-size: 1rem;
 }
 
 .btn-standard {
@@ -546,7 +579,7 @@ option,
 }
 
 #booking-success {
-	/*display: none;*/
+	display: none;
 }
 
 #booking-success section:first-of-type {
@@ -574,6 +607,111 @@ option,
 	color: rgba(0, 0, 0, .6);
 }
 
-#booking-form fieldset:first-of-type {
+/* ============
+	User Bar
+============= */
+#userbar-header {
+	float: left;
+	height: 3.5rem;
+}
+
+#userbar-header span {
+	border-right: 3px solid rgb(252, 220, 226);
+}
+
+#userbar-header button {
+	border-right: 3px solid rgb(252, 220, 226);
+	border-left: 3px solid rgb(252, 220, 226);
+}
+
+#userbar-header button:last-of-type {
+	border-right: 0;
+}
+
+.userbar-header-info {
+	color: rgb(255, 255, 255);
+	font-size: 1.25rem;
+	line-height: 2.5rem;
+	font-family: 'Neutra Display';
+	padding: 0 .5rem;
+	display: inline-block;
+	background: transparent;
+	margin: 0;
+	cursor: pointer;
+}
+
+#user-button-wrapper {
+	background-color: rgb(252, 220, 226);
+	float: left;
+	position: relative;
+}
+
+.user-button {
+	padding: .25rem 0;
+	text-align: center;
+}
+
+.user-button button {
+	margin: 0;
+}
+
+.user-button span {
+	padding: .25rem .5rem;
+	margin: 0;
+}
+
+.user-option-box {
+	background-color: rgba(0, 0, 0, .45);
+	position: fixed;
+	top: 5.5rem;
+	display: none;
+}
+
+.user-option-section {
+	border-bottom: 2px solid rgba(0, 0, 0, .65);
+	padding: 1rem;
+}
+
+.options span {
+	display: block;
+	padding: .25rem;
+}
+
+.option-button {
+	margin: 0;
+	padding: 0 0 0 1rem;
+	background-color: transparent;
+	color: white;
+}
+
+.option-button span {
+	padding: 0;
+}
+
+.option-button:hover {
+	color: rgb(252, 220, 226);
+}
+
+.options input {
+	display: block;
+	padding: .5rem;
+	margin: .5rem 0;
+	line-height: 1.5rem;
+	font-size: 1rem;
+}
+
+.options-edit {
+	display: none;
+}
+
+#change-password {
+	display: none;
+}
+
+.span-btn {
+	color: rgb(252, 220, 226);
+}
+
+#services-details {
 	display: none;
 }

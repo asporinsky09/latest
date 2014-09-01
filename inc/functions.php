@@ -1,11 +1,12 @@
 <?php 
 include_once 'bh-config.php';
+include_once 'Member.php';
 
 function prepareStatement($db, $stmt) {
         if ($statement = $db->prepare($stmt)) {
             return $statement;
         } else {
-            error_log('Error preparing statement: '.$statement);
+            error_log('Error preparing statement: '.$stmt);
             return false;
         }
     }
@@ -41,7 +42,11 @@ function login($email, $password, $db) {
                     $user_browser = $_SERVER['HTTP_USER_AGENT'];
                     // XSS protection as we might print this value
                     $member_id = preg_replace("/[^0-9]+/", "", $member_id);
+
                     $_SESSION['member_id'] = $member_id;
+                    $member = getMemberDetails($db, $member_id);
+                    $_SESSION['member'] = $member;
+                    error_log('member is '.print_r($member, true));
                     $_SESSION['login_verification_string'] = hash('sha512', $password . $user_browser);
                     return true;
                 } else {
