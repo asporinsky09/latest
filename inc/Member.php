@@ -36,6 +36,23 @@
 		return false;
 	}
 
+	function getMemberAddress($db, $member_id, $address_id) {
+		if($stmt = prepareStatement($db, "SELECT street_address, apt_num, city, state, zip 
+			FROM member_address WHERE member_id=? AND address_id = ? ORDER BY is_default DESC")) {
+			$stmt->bind_param('ii', $member_id, $address_id);
+			$stmt->execute();
+			$stmt->store_result();
+			$stmt->bind_result($addr, $aptnum, $city, $state, $zip);
+			if($stmt->num_rows < 1) {
+				return false;
+			}
+			$result = '';
+			$stmt->fetch();
+			error_log("finished address call");
+			return array('address' => $addr, 'aptnum' => $aptnum, 'city' => $city, 'state' => $state, 'zip' => $zip);
+		}
+	}
+
 	function getMemberAddressesAsOptions($db, $member_id) {
 		if($stmt = prepareStatement($db, "SELECT address_id, street_address, apt_num, city, state, zip, is_default 
 			FROM member_address WHERE member_id=? ORDER BY is_default DESC")) {

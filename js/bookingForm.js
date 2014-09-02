@@ -61,7 +61,7 @@ $(document).click(function(event) {
 	        });
             $('.overlay-wrapper').css({visibility:"hidden"});
             $('body').removeClass('blur');
-            resetBookingForm();
+            resetBookingForm();  //TODO: Move this so the form stays filled out until I Want it cleared
         }
     }        
 });
@@ -149,6 +149,7 @@ function processCoupon() {
 			data: {
 				function: 'applyCoupon',
 				member_id: $('#member_id').val(),
+				product_id: $('input[name=product]:checked').val(),
 				coupon: coupon,
 				price: price
 			},
@@ -220,7 +221,8 @@ function completeBooking(fromEl) {
 		data: {
 			function: 'doBooking',
 			price: $('#total_price').val().substr($('#total_price').val().indexOf('$') + 1),
-			product: $('input[name=product]').val(),
+			product_id: $('input[name=product]:checked').val(),
+			product_name: $('input[name=product]').attr("id"),
 			coupon_id: $('#coupon_id').val(),
 			address: $('#address_id').val(),
 			date: $('#date').val(),
@@ -230,11 +232,11 @@ function completeBooking(fromEl) {
 			ccv: $('#ccv').val()
 		},
 		success: function(data) {
+			alert(data);
 			if(data.indexOf("Success") == 0) {
 				$('#timedateresult').html($('#date').val() + ' at ' + $('#time').val());
 				advanceForm(fromEl, 1);
 			} else {
-				alert(data);
 				var result = $.parseJSON(data);
 				alert(result.error_detail);
 				$('#payment-result').html(result.error_detail);
@@ -255,6 +257,25 @@ function storeAppointmentInfo(fromEl) {
 		data: {
 			function: 'storeAppointmentId',
 			appointmentId: storedId
+		},
+		success: function(data) {
+			if(!data) {
+				alert('Something bad happened');
+			}
+		}
+	});
+}
+
+function storeOrderInfo(fromEl) {
+	var orderId = $('#order_id').val();
+	var productId = $('#product_id').val();
+	$.ajax({
+		url: 'services/booking.php',
+		type: 'POST',
+		data: {
+			function: 'storeOrderInfo',
+			orderId: orderId,
+			productId: productId
 		},
 		success: function(data) {
 			if(!data) {
@@ -303,22 +324,33 @@ function rescheduleAppointment() {
 	});
 }
 
-function updatePrice(selectedEl) {
-	var product = selectedEl.val();
+function scheduleAppointment() {
 	$.ajax({
 		url: 'services/booking.php',
 		type: 'POST',
 		data: {
-			function: 'getPrice',
-			product: product
+			function: 'scheduleAppointment',
+			address: $('#address_id').val(),
+			date: $('#date').val(),
+			time: $('#time').val()
 		},
+		async: false,
 		success: function(data) {
-			var result = $.parseJSON(data);
-			$('#cart-product').html(product);
-			$('#cart-price').html('$' + parseFloat(result.price).toFixed(2));
-			calculatePrice();
+			if(!data) {
+				delegateSuccess = false;
+			} else {
+				$('#timedateresult').html($('#date').val() + ' at ' + $('#time').val());
+				delegateSuccess = true;
+			}
 		}
 	});
+}
+
+function updatePrice(selectedEl, price) {
+	var product = selectedEl.attr("id");
+	$('#cart-product').html(product);
+	$('#cart-price').html('$' + parseFloat(price).toFixed(2));
+	calculatePrice();
 }
 
 function calculatePrice() {

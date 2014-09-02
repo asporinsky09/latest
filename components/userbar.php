@@ -27,6 +27,11 @@ include_once 'inc/Appointment.php';
 		$email = $_SESSION['member']['email'];
 		$phone = $_SESSION['member']['phone'];
 		$appointments = getAppointmentsForMember($db, $_SESSION['member_id']);
+		$unscheduled = getUnscheduledForMember($db, $_SESSION['member_id']);
+		$total_unsched_remaining = 0;
+		foreach ($unscheduled as $future) {
+			$total_unsched_remaining += $future['max_uses'] - $future['used'];
+		}
 	?>
 	<div class="clear" id="userbar-user">
 		<div class="vertical-align-wrapper" id="user-button-wrapper">
@@ -38,7 +43,7 @@ include_once 'inc/Appointment.php';
 				<button type="button" class="userbar-header-info" id="userbar-scheduled-header" <?php echo (count($appointments) > 0) ? "onclick=\"$('#scheduled-details').toggle(); $('.user-option-box:visible').not('#scheduled-details').hide();\"" : "" ?>>
 					[<?php echo count($appointments) ?>] scheduled</button>
 				<button type="button" class="userbar-header-info" id="userbar-services-header" onclick="$('#services-details').toggle(); $('.user-option-box:visible').not('#services-details').hide();">
-					[0] available</button>
+					[<?php echo $total_unsched_remaining ?>] available</button>
 			</div>
 		</div>
 		<section class="user-option-box" id="user-details">
@@ -96,8 +101,29 @@ include_once 'inc/Appointment.php';
 			</ul>
 		</section>
 		<section class="user-option-box" id="services-details">
-			<div class="user-option-section">BOOM2
-			</div>
+			<ul>
+				<?php 
+				foreach ($unscheduled as $future) {
+				?>
+					<div class="user-option-section">
+						<section class="options options-fixed clear">
+							<div class="col-auto col-no-outer-pad">
+								<li class="unscheduled-entry">
+									<input type="hidden" id="order_id" value="<?php echo $future['order_id'] ?>">
+									<input type="hidden" id="product_id" value="<?php echo $future['product_id'] ?>">
+									<h3>Booked on <?php echo $future['submitted'] ?></h3>
+									<span><?php echo $future['product_name'] ?></span>
+									<span><?php echo $future['max_uses'] - $future['used'] ?> Blowouts Remaining</span>
+								</li>
+							</div>
+							<div class="col-auto col-last col-no-outer-pad">
+								<!-- TODO: Open schedule and address selection from booking when the button is clicked -->
+								<button class="option-button" onclick="storeOrderInfo($(this)); morphBookingForm($(this), 'schedule')"><span class="fa fa-calendar fa-3x"></span></button>
+							</div>
+						</section>
+					</div>
+				<?php } ?>
+			</ul>
 		</section>
 	</div>	
 <?php } ?>

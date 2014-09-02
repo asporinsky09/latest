@@ -3,8 +3,11 @@
 	include_once 'inc/dbConnect.php';
 	include_once 'inc/Session.php';
 	include_once 'inc/Member.php';
+	include_once 'inc/Product.php';
 
 	$logged_in = login_check($db);
+	$products = getProducts($db);
+	$packages = getPackages($db);
 ?>
 
 <div class="overlay-wrapper">
@@ -36,14 +39,24 @@
 			<fieldset id="product-select-form">
 				<div id="booking-product">
 					<h2>What can we do for you?</h2>
-					<input type="radio" name="product" id="blowout" value="Blowout" required onclick="updatePrice($(this));">
-					<label for="blowout">Blowout</label>
-					<input type="radio" name="product" id="braid" value="Braid" onclick="updatePrice($(this));">
-					<label for="braid">Braid</label>
-					<input type="radio" name="product" id="up-do" value="Up-Do" onclick="updatePrice($(this));">
-					<label for="up-do">Up-Do</label>
-					<input type="radio" name="product" id="package" value="package">
-					<label for="package">Package</label>
+					<div id="regular-products">
+						<?php 
+						foreach ($products as $product) {
+						?>
+							<input type="radio" name="product" id="<?php echo $product['product'] ?>" value="<?php echo $product['product_id'] ?>" required onclick="updatePrice($(this), <?php echo $product['price'] ?>);">
+							<label for="<?php echo $product['product'] ?>"><?php echo $product['product'] ?></label>
+						<?php } ?>
+						<button type="button" id="packages-button" onclick="$(this).parent().siblings().show(); $(this).parent().hide();">Packages</button>
+					</div>
+					<div class="package-products">
+						<?php 
+						foreach ($packages as $package) {
+						?>
+							<input type="radio" name="product" id="<?php echo $package['product'] ?>" value="<?php echo $package['product_id'] ?>" required onclick="updatePrice($(this), <?php echo $package['price'] ?>);">
+							<label for="<?php echo $package['product'] ?>"><?php echo $package['product'] ?></label>
+						<?php } ?>
+						<button type="button" id="packages-button" onclick="$(this).parent().siblings().show(); $(this).parent().hide();">Single Services</button>
+					</div>
 				</div>
 				<div id="booking-reciept" class="grid clear">
 					<div id="booking-price" class="grid clear">
@@ -54,7 +67,7 @@
 							</tr>
 							<tr>
 								<td id="cart-coupon-label"></td>
-								<Td id="cart-coupon"></td>
+								<td id="cart-coupon"></td>
 								<td id="cart-coupon-adjust"></td>
 							</tr>
 							<tfoot>

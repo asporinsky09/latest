@@ -336,6 +336,7 @@ nav li {
 
 .btn-standard {
 	font-size: 2rem;
+	border: 2px solid rgb(252, 220, 226);
 }
 
 ::-webkit-input-placeholder {
@@ -494,23 +495,6 @@ button {
     -o-opacity: 0;
 }
 
-#booking-form input[type="radio"] + label {
-   position:relative;
-   display: block;
-   padding: .5rem;
-   background-color: rgb(252, 220, 226);;
-   color: black;
-   width: 80%;
-   margin: .5rem auto;
-   line-height: 3rem;
-   font-size: 2rem;
-   font-weight: bold;
-}
-
-#booking-form input[type="radio"]:checked + label {
-	background-color: transparent;
-}
-
 select,
 option,
 #booking-form input[type="text"],
@@ -532,6 +516,39 @@ option,
 #booking-form input[type="password"] {
 	line-height: 2.5rem;
 	font-size: 1.5rem;
+}
+
+#booking-form #packages-button,
+#booking-form input[type="radio"] + label {
+   display: block;
+   padding: .5rem;
+   background-color: rgb(252, 220, 226);
+   color: black;
+   width: 80%;
+   margin: .5rem auto;
+   line-height: 3rem;
+   font-size: 2rem;
+   font-weight: bold;
+   font-family: 'Neutra Text';
+   cursor: pointer;
+}
+
+#booking-form input[type="radio"] + label {
+   position: relative;
+}
+
+#booking-form #packages-button,
+#booking-form button,
+#booking-form input[type="radio"] + label {
+	border: 2px solid rgb(252, 220, 226);
+}
+
+.btn-standard:hover,
+#booking-form #packages-button:hover,
+#booking-form button:hover,
+#booking-form input[type="radio"] + label:hover,
+#booking-form input[type="radio"]:checked + label {
+	background-color: transparent;
 }
 
 #coupon-wrapper {
@@ -568,6 +585,10 @@ option,
 	margin-bottom: 1rem;
 	padding-bottom: 1rem;
 	border-bottom: 2px solid rgba(0, 0, 0, .6);
+}
+
+#booking-product div:not(:first-of-type) {
+	display: none;
 }
 
 #price-detail td:first-of-type {
@@ -718,6 +739,7 @@ option,
 
 .span-btn {
 	color: rgb(252, 220, 226);
+	cursor: pointer;
 }
 
 #services-details {

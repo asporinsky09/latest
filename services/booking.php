@@ -7,6 +7,7 @@
 	include_once '../inc/Order.php';
 	include_once '../inc/Appointment.php';
 	include_once '../inc/Coupon.php';
+	include_once '../inc/Mail.php';
 	SecureSession::create();
 
 	if(isset($_POST['function']) && !empty($_POST['function'])) {
@@ -26,8 +27,9 @@
 			case 'applyCoupon':
 				$member_id = $_SESSION['member_id'];
 				$couponCode = filter_input(INPUT_POST, 'coupon', FILTER_SANITIZE_STRING);
+				$productId = filter_input(INPUT_POST, 'product_id', FILTER_SANITIZE_STRING);
 				$price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_STRING);
-				echo applyCoupon($db, $couponCode, $price, $member_id);
+				echo applyCoupon($db, $couponCode, $productId, $price, $member_id);
 				break;
 			case 'addAddress':
 				$member_id = $_SESSION['member_id'];
@@ -54,13 +56,21 @@
 				$ccnum = filter_input(INPUT_POST, 'ccnum', FILTER_SANITIZE_STRING);
 				$ccexp = filter_input(INPUT_POST, 'ccexp', FILTER_SANITIZE_STRING);
 				$ccv = filter_input(INPUT_POST, 'ccv', FILTER_SANITIZE_STRING);
-				$product = filter_input(INPUT_POST, 'product', FILTER_SANITIZE_STRING);
+				$product_id = filter_input(INPUT_POST, 'product_id', FILTER_SANITIZE_STRING);
+				$product_name = filter_input(INPUT_POST, 'product_name', FILTER_SANITIZE_STRING);
 				$price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_STRING);
-				echo doBooking($db, $member_id, $address_id, $coupon, $product, $price, $date, $time, $ccnum, $ccexp, $ccv);
+				echo doBooking($db, $member_id, $address_id, $coupon, $product_id, $product_name, $price, $date, $time, $ccnum, $ccexp, $ccv);
 				break;
 			case 'storeAppointmentId':
 				$appointment_id = filter_input(INPUT_POST, 'appointmentId', FILTER_SANITIZE_STRING);
 				$_SESSION['appointment_id'] = $appointment_id;
+				echo true;
+				break;
+			case 'storeOrderInfo':
+				$order_id = filter_input(INPUT_POST, 'orderId', FILTER_SANITIZE_STRING);
+				$product_id = filter_input(INPUT_POST, 'productId', FILTER_SANITIZE_STRING);
+				$_SESSION['order_id'] = $order_id;
+				$_SESSION['product_id'] = $product_id;
 				echo true;
 				break;
 			case 'rescheduleAppointment':
@@ -70,6 +80,15 @@
 				$date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
 				$time = filter_input(INPUT_POST, 'time', FILTER_SANITIZE_STRING);
 				echo rescheduleAppointment($db, $member_id, $appointment_id, $address_id, $date, $time);
+				break;
+			case 'scheduleAppointment':
+				$member_id = $_SESSION['member_id'];
+				$order_id = $_SESSION['order_id'];
+				$product_id = $_SESSION['product_id'];
+				$address_id = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
+				$date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
+				$time = filter_input(INPUT_POST, 'time', FILTER_SANITIZE_STRING);
+				echo scheduleAppointment($db, $member_id, $order_id, $product_id, $address_id, $date, $time);
 				break;
 			case 'cancelAppointment':
 				$member_id = $_SESSION['member_id'];
@@ -81,21 +100,21 @@
 		}
 	}
 
-	function doBooking($db, $member_id, $address_id, $coupon_id, $product, $price, $date, $time, $ccnum, $ccexp, $ccv) {
+	function doBooking($db, $member_id, $address_id, $coupon_id, $product_id, $product_name, $price, $date, $time, $ccnum, $ccexp, $ccv) {
         $member = getMemberDetails($db, $member_id);
         if($member) {
-        	$transResult = processTransaction($member['fname'], $member['lname'], $product, $price, $ccnum, $ccexp, $ccv);
+        	$transResult = processTransaction($member['fname'], $member['lname'], $product_name, $price, $ccnum, $ccexp, $ccv);
         	if($transResult) {
-        		error_log(print_r($transResult, true));
         		if ($transResult['error_code']) {
         			error_log('Transaction declined for member_id ' . $member_id . 'because '.$transResult['error_detail']);
         			return json_encode($transResult);
         		} else {
-    				$product_id = getIdForProduct($db, $product);
     				$order_id = storeOrder($db, $member_id, $product_id, $transResult, $coupon_id, $price);
     				if($order_id) {
     					storeAppointment($db, $member_id, $product_id, $address_id, $date, $time, $order_id);
     					storeCouponUse($db, $member_id, $coupon_id);
+    					sendBookingConfirmation($db, $member_id, $member, $address_id, $coupon_id, $product_id, $product_name, $price, $date, $time);
+    					error_log("finished mail");
     					return 'Success';
     				} else {
     					error_log('Could not insert order, cannot book for member_id ' . $member_id);
@@ -128,24 +147,30 @@
 	function addAddress($db, $member_id, $address, $aptnum, $city, $state, $zip, $instruction) {
 		$address_result = storeAddress($db, $member_id, $address, $aptnum, $city, $state, $zip, $instruction);
 		if ($address_result) {
-
+			return $address_result;
 		} else {
 			echo 'Error storing address';
 		}
 	}
 
-	function applyCoupon($db, $couponCode, $originalPrice, $member_id) {
-		// TODO: Probably need to uppercase the code?
-		if($stmt = prepareStatement($db, "SELECT id, value, discount_type, max_uses, max_uses_per_user FROM coupons WHERE coupon_code = ? AND begin_date <= CURDATE() AND end_date >= CURDATE()")) {
+	function applyCoupon($db, $couponCode, $productId, $originalPrice, $member_id) {
+		if($stmt = prepareStatement($db, "SELECT c.id, value, discount_type, c.product_id, p.product_name, max_uses, max_uses_per_user FROM coupons c"
+			." INNER JOIN products p ON p.product_id = c.product_id"
+			." WHERE coupon_code = ? AND begin_date <= CURDATE() AND (end_date >= CURDATE() OR end_date IS NULL)")) {
 			$stmt->bind_param('s', $couponCode);
 			$stmt->execute();
 			$stmt->store_result();
 			$num_coupons = $stmt->num_rows;
  	
 			if($num_coupons == 1) {
-				$stmt->bind_result($coupon_id, $value, $discount_type, $max_uses, $max_per_user);
+				$stmt->bind_result($coupon_id, $value, $discount_type, $product_id, $product_name, $max_uses, $max_per_user);
 				$stmt->fetch();
 
+				if($product_id) {
+					if(!($productId == $product_id)) {
+						return json_encode(array('id' => '', 'adjust' => '', 'error' => 'Sorry, coupon '.$couponCode.' is only valid on the "'.$product_name.'" Product'));
+					}
+				}
 				$result;
 				if($result = checkForOverMaxUses($db, $max_uses, $coupon_id, $couponCode)) {
 					return json_encode(array('id' => '', 'adjust' => '', 'error' => $result));
