@@ -159,20 +159,17 @@ html {
 }
 
 body {
-	font-family: 'Neutra Display';
-	font-size: 14px;
-	color: white;
-	padding: 2rem;
 	height: 100%;
 	width: 100%;
 	overflow: hidden;
 }
 
-a {
-	text-decoration: none;
-	color: white;
-}
-
+select,
+option,
+#booking-form input[type="text"],
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"],
 .overlay-wrapper {
 	z-index: 996;
 	position:fixed; 
@@ -182,7 +179,6 @@ a {
 	height: 100%;
 	pointer-events: none;
 	visibility: hidden;
-	background-color: rgba(0, 0, 0, .65);
 }
 
 .overlay {
@@ -193,7 +189,7 @@ a {
 	height: 100%;
 	padding: 2rem;
 	overflow: hidden;
-	background: black url('../img/fbg2.jpg');
+	background: black url('../img/fbg.jpg');
 	background-position: right center;
 	background-size: cover;
 }
@@ -218,104 +214,17 @@ a {
 }
 
 /* =============
-	Layout
-============= */
-.logo {
-	float: left;
-	margin-bottom: 3rem;
-}
-
-.userbar {
-	top: 2rem;
-	right: 2rem;
-	height: 3.5rem;
-	position: fixed;
-}
-
-.login {
-	padding: 0 .25rem;
-}
-
-nav {
-	float: left;
-	margin-left: 1rem;
-}
-
-nav li {
-	padding: .75rem;
-	display: block;
-	cursor: pointer;
-}
-
-nav li:hover {
-	margin-right: -3px;
-	border-right: 3px solid rgb(252, 220, 226);
-	color: rgb(252, 220, 226);
-}
-
-footer {
-	position: fixed;
-	right: 2rem;
-	bottom: 2rem;
-	padding-left: 1rem;
-}
-
-footer img {
-	float: left;
-	width: 3rem;
-	margin: .5rem 1rem .5rem 0;
-}
-
-input {
-	padding: .25rem .5rem;
-}
-
-nav,
-footer,
-.userbar {
-	background-color: rgba(0, 0, 0, .45);
-}
-
-.userbar input,
-.login button {
-	line-height: 2rem;
-	font-size: 1.5rem;
-}
-
-.userbar input {
-	background-color: rgba(252, 220, 226, .65);
-}
-
-.login button {
-	background-color: rgb(252, 220, 226);
-}
-
-#forgot {
-	background-color: rgba(0, 0, 0, .8);
-	color: rgb(252, 220, 226);
-	font-size: 1rem;
-	font-weight: bold;
-	padding-left: .5rem;
-	padding-right: .5rem;
-	top: -.5rem;
-}
-
-.login input,
-.login button,
-.btn-login {
-	padding: .25rem; 
-	margin-left: .6rem;
-}
-
-/* =============
 	Typography
 ============= */
-h1, h2, h3, button, span {
-	font-family: 'Neutra Text';
+body {
+	font-family: 'Neutra Display';
+	font-size: 14px;
 }
 
-span {
-	font-size: 1.25rem;
+h1, h2, h3, button, span,
+#booking-form #packages-button,
+#booking-form input[type="radio"] + label {
+	font-family: 'Neutra Text';
 }
 
 fieldset,
@@ -323,6 +232,16 @@ input,
 .btn-login,
 #forgot {
 	font-family: 'Roboto Slab';
+}
+
+.booking-result section:last-of-type h2,
+.userbar-header-info {
+	font-family: 'Neutra Display';
+}
+
+#booking-form #packages-button,
+#booking-form input[type="radio"] + label {
+	font-weight: bold;
 }
 
 .logo {
@@ -334,9 +253,171 @@ nav li {
 	font-size: 2.4rem;
 }
 
-.btn-standard {
+#booking-form h2 {
+	font-size: 2.25rem;
+}
+
+.userbar input,
+.login button,
+.userbar-header-info,
+#booking-form button,
+select,
+option,
+#booking-form input[type="text"],
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"],
+#booking-form h3 {
+	font-size: 1.5rem;
+	
+}
+
+.userbar input,
+.login button,
+.userbar-header-info,
+#booking-form button,
+select,
+option,
+#booking-form input[type="text"],
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"],
+#booking-form h3 {
+	line-height: 2.5rem;
+}
+
+.btn-standard,
+#booking-form #packages-button,
+#booking-form input[type="radio"] + label {
 	font-size: 2rem;
-	border: 2px solid rgb(252, 220, 226);
+}
+
+#booking-form #packages-button,
+#booking-form input[type="radio"] + label {
+	line-height: 3rem;
+}
+
+#content-main h2 {
+	font-size: 3rem;
+}
+
+#content-main p {
+	font-size: 2.75rem;
+}
+
+.response {
+	font-weight: bold;
+}
+
+/*TODO: Might only need span here */
+span,
+.form-detail,
+.response {
+	font-size: 1.25rem;
+}
+
+.booking-result section:last-of-type h2 {
+	font-weight: lighter;
+	font-size: 2.5rem;
+}
+
+.options input {
+	line-height: 1.5rem;
+	font-size: 1rem;
+}
+
+.userbar input,
+.login button {
+	line-height: 2rem;
+	font-size: 1.5rem;
+}
+
+/* END OF TYPOGRAPHY */
+
+/* =============
+	Visual Styles
+============= */
+button,
+.btn-standard,
+/*.login button,*/
+#booking-form #packages-button,
+#booking-form input[type="radio"] + label,
+#user-button-wrapper {
+	background-color: rgb(252, 220, 226);
+}
+
+.option-button,
+.btn-standard:hover,
+.userbar-header-info,
+.user-button,
+.booking-result section:last-of-type,
+.booking-result section:last-of-type h2,
+#booking-form #packages-button:hover,
+#booking-form button:hover,
+#booking-form input[type="radio"] + label:hover,
+#booking-form input[type="radio"]:checked + label {
+	background-color: transparent;
+}
+
+.userbar input,
+.booking-result section:first-of-type,
+#booking-form fieldset
+{
+	background-color: rgba(252, 220, 226, .65);
+}
+
+select,
+option,
+#booking-form input[type="text"],
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"],
+.overlay-wrapper {
+	background-color: rgba(0, 0, 0, .65);
+}
+
+nav,
+footer,
+.userbar,
+.user-option-box {
+	background-color: rgba(0, 0, 0, .45);
+}
+
+.span-btn,
+select,
+option,
+#booking-form input[type="text"],
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"],
+.option-button:hover {
+	color: rgb(252, 220, 226);
+}
+
+.booking-result section:last-of-type h2 {
+	color: rgba(252, 220, 226, .65);
+}
+
+button,
+.btn-standard, 
+.user-button span,
+#booking-form #packages-button,
+#booking-form input[type="radio"] + label
+{
+    color: black;
+}
+
+a,
+body,
+.option-button,
+.userbar-header-info {
+	color: white;
+}
+
+.booking-result h3,
+.booking-result section:first-of-type h2,
+#booking-form span {
+	color: rgba(0, 0, 0, .65);
 }
 
 ::-webkit-input-placeholder {
@@ -355,48 +436,221 @@ nav li {
    color: black;  
 }
 
-/* =============
-	Visual Styles
-============= */
+#booking-form ::-webkit-input-placeholder {
+   color: rgb(252, 220, 226);
+}
+
+#booking-form :-moz-placeholder { /* Firefox 18- */
+   color: rgb(252, 220, 226);  
+}
+
+#booking-form ::-moz-placeholder {  /* Firefox 19+ */
+   color: rgb(252, 220, 226);  
+}
+
+#booking-form :-ms-input-placeholder {  
+   color: rgb(252, 220, 226);  
+}
+
+a {
+	text-decoration: none;
+}
+
 button, input {
 	border: 0;
 }
 
-/* TODO NEED TO FIX BUTTON STYLING INCONSISTENCIES */
 button {
 	cursor: pointer;
-	background-color: rgb(252, 220, 226);
-    color: black;
 }
 
+.login {
+	padding: 0 .25rem;
+}
+
+input {
+	padding: .25rem .5rem;
+}
+
+.login input,
+.login button,
 .btn-login {
-	display: inline;
+	padding: .25rem; 
 }
 
 .btn-standard {
 	padding: .5rem 1rem;
-	color: black;
+	border: 2px solid rgb(252, 220, 226);
 }
+
+#booking-form fieldset {
+	padding: 1.5rem;
+}
+
+/* =============
+	Std Layout
+============= */
+.btn-login {
+	display: inline;
+}
+
+footer img {
+	float: left;
+	width: 3rem;
+}
+
+.login input,
+.login button,
+.btn-login {
+	margin-left: .6rem;
+}
+
+#userbar-header {
+	height: 3.5rem;
+	float: right;
+}
+
+/* =============
+Responsive Layout
+============= */
+@media screen and (min-width: 400px)  {
+	body {
+		font-size: 7px;
+		padding: 0;
+	}
+
+	.overlay {
+		padding: 0;
+	}
+
+	header {
+		display: block;
+		text-align: center;
+	}
+
+	.userbar {
+		display: block;
+		width: 100%;
+		position: relative;
+	}
+
+	.user-option-box {
+		display: none;
+		position: absolute;
+		top: 3.5rem;
+	}
+
+	#greeting {
+		margin: 0 auto;
+	}
+
+	nav {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: 0;
+		height: 8%;
+	}
+
+	footer {
+		position: fixed;
+		bottom: 8%;
+		margin: 0 auto;
+	}
+
+	nav li {
+		float: left;
+		width: 25%;
+		text-align: center;
+	}
+
+	#content-main {
+		text-align: center;
+		padding: 2rem;
+		width: auto;
+	}
+}
+@media screen and (min-width: 600px)  {
+}
+@media screen and (min-width: 1000px) {
+	nav li:hover {
+		color: rgb(252, 220, 226);
+	}
+
+	body,
+	.overlay {
+		padding: 2rem;
+	}
+
+	.logo {
+		float: left;
+		margin-bottom: 3rem;
+	}
+
+	.userbar {
+		top: 2rem;
+		right: 2rem;
+		height: 3.5rem;
+		position: fixed;
+		width: auto;
+	}
+
+	.user-option-box {
+		position: fixed;
+		top: 5.5rem;
+		display: none;
+	}
+
+	nav {
+		float: left;
+		margin-left: 1rem;
+		position: static;
+		bottom: auto;
+	}
+
+	nav li {
+		padding: .75rem;
+		display: block;
+		cursor: pointer;
+		float: none;
+	}
+
+	nav li:hover {
+		margin-right: -3px;
+		border-right: 3px solid rgb(252, 220, 226);
+	}
+
+	footer {
+		position: fixed;
+		right: 2rem;
+		bottom: 2rem;
+		padding-left: 1rem;
+		height: auto;
+	}
+
+	footer img {
+		margin: .5rem 1rem .5rem 0;
+	}
+
+	#content-main {
+		margin-left: 3rem;
+		padding: 1rem;
+		width: 35%;
+		bottom: 3rem;
+		position: fixed;
+		text-align: left;
+	}
+}
+/*@media screen and (min-width: 1400px) {
+}*/
 
 /* =============
 	Index/Main
 ============= */
 /* TODO Figure out sizing and stuff for this weird content-main case */
-#content-main {
-	margin-left: 3rem;
-	padding: 1rem;
-	width: 35%;
-	bottom: 3rem;
-	position: fixed;
-}
-
 #content-main h2 {
 	margin-bottom: 2rem;
-	font-size: 3rem;
-}
-
-#content-main p {
-	font-size: 2.75rem;
 }
 
 .btn-book {
@@ -422,42 +676,22 @@ button {
 	text-align: center;
 }
 
+#booking-form #booking-success,
 #booking-form fieldset {
-	width: 100%;
-	padding: 1.5rem;
-	position: absolute;
-	background-color: rgba(252, 220, 226, .6);
-}
-
-#booking-form #booking-success {
 	width: 100%;
 	position: absolute;
 }
 
 #booking-form h2 {
-	font-size: 2.25rem;
 	margin-bottom: 2rem;
 }
 
-#booking-form h3 {
-	font-size: 1.5rem;
-}
-
-#booking-form span {
-	color: rgba(0, 0, 0, .65);
-}
-
-.form-detail,
 .response {
-	margin-bottom: 1rem;
-	font-size: 1.25rem;
-}
-
-.response {
-	font-weight: bold;
 	display: none;
 }
 
+.form-detail,
+.response,
 #booking-form .grid {
 	margin-bottom: 1rem;
 }
@@ -501,35 +735,16 @@ option,
 #booking-form input[type="tel"],
 #booking-form input[type="email"],
 #booking-form input[type="password"] {
-	background-color: rgba(0, 0, 0, .65);
 	width: 100%;
 	padding: 0 .75rem;
-	color: rgb(252, 220, 226);
-}
-
-#booking-form button,
-select,
-option,
-#booking-form input[type="text"],
-#booking-form input[type="tel"],
-#booking-form input[type="email"],
-#booking-form input[type="password"] {
-	line-height: 2.5rem;
-	font-size: 1.5rem;
 }
 
 #booking-form #packages-button,
 #booking-form input[type="radio"] + label {
    display: block;
    padding: .5rem;
-   background-color: rgb(252, 220, 226);
-   color: black;
    width: 80%;
    margin: .5rem auto;
-   line-height: 3rem;
-   font-size: 2rem;
-   font-weight: bold;
-   font-family: 'Neutra Text';
    cursor: pointer;
 }
 
@@ -543,37 +758,9 @@ option,
 	border: 2px solid rgb(252, 220, 226);
 }
 
-.btn-standard:hover,
-#booking-form #packages-button:hover,
-#booking-form button:hover,
-#booking-form input[type="radio"] + label:hover,
-#booking-form input[type="radio"]:checked + label {
-	background-color: transparent;
-}
-
 #coupon-wrapper {
 	width: 80%;
 	margin: 0 auto;
-}
-
-#booking-form ::-webkit-input-placeholder {
-   color: rgb(252, 220, 226);
-}
-
-#booking-form :-moz-placeholder { /* Firefox 18- */
-   color: rgb(252, 220, 226);  
-}
-
-#booking-form ::-moz-placeholder {  /* Firefox 19+ */
-   color: rgb(252, 220, 226);  
-}
-
-#booking-form :-ms-input-placeholder {  
-   color: rgb(252, 220, 226);  
-}
-
-#booking-form fieldset:not(:first-of-type) {
-	display: none;
 }
 
 #date {
@@ -603,34 +790,11 @@ option,
 	display: none;
 }
 
-.booking-result section:first-of-type {
-	background-color: rgba(252, 220, 226, .6);
-	padding: 3.5rem 1.5rem;
-}
-
-.booking-result section:first-of-type h2 {
-	color: rgba(0, 0, 0, .6);
-}
-
+.booking-result section:first-of-type,
 .booking-result section:last-of-type {
-	background-color: transparent;
 	padding: 3.5rem 1.5rem;
 }
 
-.booking-result section:last-of-type h2 {
-	color: rgba(252, 220, 226, .6);
-	font-weight: lighter;
-	font-family: 'Neutra Display';
-	font-size: 2.5rem;
-}
-
-.booking-result h3 {
-	color: rgba(0, 0, 0, .6);
-}
-
-/* =============
-	New Booking form stuff
-============= */
 #booking-form fieldset {
 	display: none;
 }
@@ -638,10 +802,6 @@ option,
 /* ============
 	User Bar
 ============= */
-#userbar-header {
-	float: left;
-	height: 3.5rem;
-}
 
 #userbar-header span {
 	border-right: 3px solid rgb(252, 220, 226);
@@ -657,19 +817,13 @@ option,
 }
 
 .userbar-header-info {
-	color: rgb(255, 255, 255);
-	font-size: 1.25rem;
-	line-height: 2.5rem;
-	font-family: 'Neutra Display';
 	padding: 0 .5rem;
 	display: inline-block;
-	background: transparent;
 	margin: 0;
 	cursor: pointer;
 }
 
 #user-button-wrapper {
-	background-color: rgb(252, 220, 226);
 	float: left;
 	position: relative;
 }
@@ -688,13 +842,6 @@ option,
 	margin: 0;
 }
 
-.user-option-box {
-	background-color: rgba(0, 0, 0, .45);
-	position: fixed;
-	top: 5.5rem;
-	display: none;
-}
-
 .user-option-section {
 	border-bottom: 2px solid rgba(0, 0, 0, .65);
 	padding: 1rem;
@@ -708,8 +855,6 @@ option,
 .option-button {
 	margin: 0;
 	padding: 0 0 0 1rem;
-	background-color: transparent;
-	color: white;
 	display: block;
 }
 
@@ -717,16 +862,10 @@ option,
 	padding: 0;
 }
 
-.option-button:hover {
-	color: rgb(252, 220, 226);
-}
-
 .options input {
 	display: block;
 	padding: .5rem;
 	margin: .5rem 0;
-	line-height: 1.5rem;
-	font-size: 1rem;
 }
 
 .options-edit {
@@ -738,7 +877,6 @@ option,
 }
 
 .span-btn {
-	color: rgb(252, 220, 226);
 	cursor: pointer;
 }
 

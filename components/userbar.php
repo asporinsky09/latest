@@ -4,13 +4,6 @@ include_once 'inc/dbConnect.php';
 include_once 'inc/Session.php';
 include_once 'inc/Appointment.php';
 
-	SecureSession::create();
-	$logged_in = login_check($db);
-
-	// function refreshHeaders($db) {
-	// 	$appointments = getAppointmentsForMember($db, $_SESSION['member_id']);
-	// 	userbar-scheduled-header
-	// }
 ?>
 <section class="userbar">
 <?php if (! $logged_in) { ?>
@@ -35,15 +28,17 @@ include_once 'inc/Appointment.php';
 	?>
 	<div class="clear" id="userbar-user">
 		<div class="vertical-align-wrapper" id="user-button-wrapper">
-			<button class="vertical-center user-button" onclick="$('#user-details').toggle(); $('.user-option-box:visible').not('#user-details').hide();"><span class="fa fa-user fa-3x"></span></button>
+			<button class="vertical-center user-button" onclick="$('#user-details').toggle(); $('.user-option-box:visible').not('#user-details').hide();"><span class="fa fa-user fa-2x"></span></button>
 		</div>
 		<div class="vertical-align-wrapper" id="userbar-header">
 			<div class="vertical-center">
-				<span class="userbar-header-info" onclick="$('#user-details').toggle(); $('.user-option-box:visible').not('#user-details').hide();">welcome back gorgeous</span>
-				<button type="button" class="userbar-header-info" id="userbar-scheduled-header" <?php echo (count($appointments) > 0) ? "onclick=\"$('#scheduled-details').toggle(); $('.user-option-box:visible').not('#scheduled-details').hide();\"" : "" ?>>
-					[<?php echo count($appointments) ?>] scheduled</button>
-				<button type="button" class="userbar-header-info" id="userbar-services-header" onclick="$('#services-details').toggle(); $('.user-option-box:visible').not('#services-details').hide();">
-					[<?php echo $total_unsched_remaining ?>] available</button>
+				<div class="clear">
+					<span class="userbar-header-info" id="greeting" onclick="$('#user-details').toggle(); $('.user-option-box:visible').not('#user-details').hide();">welcome back gorgeous</span>
+					<button type="button" class="userbar-header-info" id="userbar-scheduled-header" <?php echo (count($appointments) > 0) ? "onclick=\"$('#scheduled-details').toggle(); $('.user-option-box:visible').not('#scheduled-details').hide();\"" : "" ?>>
+						[<?php echo count($appointments) ?>] scheduled</button>
+					<button type="button" class="userbar-header-info" id="userbar-services-header" onclick="$('#services-details').toggle(); $('.user-option-box:visible').not('#services-details').hide();">
+						[<?php echo $total_unsched_remaining ?>] available</button>
+				</div>
 			</div>
 		</div>
 		<section class="user-option-box" id="user-details">
