@@ -6,7 +6,7 @@ function prepareStatement($db, $stmt) {
         if ($statement = $db->prepare($stmt)) {
             return $statement;
         } else {
-            error_log('Error preparing statement: '.$stmt);
+            error_log('Error preparing statement: '.$stmt. ' due to '.$db->error);
             return false;
         }
     }

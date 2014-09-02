@@ -11,12 +11,13 @@ include("components/pagebegin.php"); ?>
 			<section id="content-main">
 				<h2>this is blohaute</h2>
 				<p>its a mobile on demand styling app and you should sign up so we can get rich and buy a yacht. sounds good.</p>
-				<button class=" btn-book btn-standard" onClick="morphBookingForm($(this), $('.overlay-wrapper'), $('#booking-form'))">book now</button>
+				<?php if($logged_in) { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking_in')\">book now</button>"; }
+				 else { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking')\">book now</button>"; } ?>
 			</section>
 			<?php include("components/footer.php"); ?>
 		</div>
 	</body>
-	<?php include("booking-form.php"); ?>
+	<?php include("components/booking-form.php"); ?>
 	<script type="text/JavaScript" src="js/sha512.js"></script> 
     <script type="text/JavaScript" src="js/forms.js"></script>
     <script type="text/JavaScript" src="js/jquery-1.11.1.min.js"></script> 

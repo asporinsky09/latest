@@ -1,5 +1,5 @@
 <?php
-	function processTransaction($firstName, $lastName, $product, $price, $ccnum, $ccexp, $cvv) {
+	function processTransaction($firstName, $lastName, $product, $price, $ccnum, $ccexp, $ccv) {
 		$loginname = "94AJGkc88s";
 		$transactionkey = "558mE7e385fRp8Ku";
 		$post_url = "https://secure.authorize.net/gateway/transact.dll";
@@ -16,7 +16,7 @@
             "x_method" => "CC",
             "x_card_num" => $ccnum,
             "x_exp_date" => $ccexp,
-            "x_card_code" => $cvv,
+            "x_card_code" => $ccv,
             "x_amount" => $price,
             "x_description" => $product,
             "x_first_name" => $firstName,
@@ -45,18 +45,19 @@
         }
 
         $responseCode = $data[1];
-        error_log('response code was ' . $responseCode);
         if ($responseCode == 1) {
         	if(! $data[10] == $price) {
         		error_log('Price from authorize of ' . $data[10] . ' does not match given price of ' . $price);
         		return false;
         	}
         	$transId = $data[7];
-        	return $transId;
-        } else if ($responseCode == 2) {
-        	return "Declined";
+        	return array('transId' => $transId, 'error_code' => '', 'error_detail' => '');
         } else {
-        	return false;
+            return formatErrorResponse($data);
         }
+    }
+
+    function formatErrorResponse($data) {
+        return array('error_code' => $data[1], 'error_detail' => $data[4], 'transId' => '');
     }
 ?>

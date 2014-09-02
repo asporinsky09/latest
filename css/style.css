@@ -578,33 +578,40 @@ option,
 	text-align: right;
 }
 
-#booking-success {
+.booking-result {
 	display: none;
 }
 
-#booking-success section:first-of-type {
+.booking-result section:first-of-type {
 	background-color: rgba(252, 220, 226, .6);
 	padding: 3.5rem 1.5rem;
 }
 
-#booking-success section:first-of-type h2 {
+.booking-result section:first-of-type h2 {
 	color: rgba(0, 0, 0, .6);
 }
 
-#booking-success section:last-of-type {
+.booking-result section:last-of-type {
 	background-color: transparent;
 	padding: 3.5rem 1.5rem;
 }
 
-#booking-success section:last-of-type h2 {
+.booking-result section:last-of-type h2 {
 	color: rgba(252, 220, 226, .6);
 	font-weight: lighter;
 	font-family: 'Neutra Display';
 	font-size: 2.5rem;
 }
 
-#booking-success h3 {
+.booking-result h3 {
 	color: rgba(0, 0, 0, .6);
+}
+
+/* =============
+	New Booking form stuff
+============= */
+#booking-form fieldset {
+	display: none;
 }
 
 /* ============
@@ -682,6 +689,7 @@ option,
 	padding: 0 0 0 1rem;
 	background-color: transparent;
 	color: white;
+	display: block;
 }
 
 .option-button span {

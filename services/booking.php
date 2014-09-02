@@ -53,25 +53,43 @@
 				$time = filter_input(INPUT_POST, 'time', FILTER_SANITIZE_STRING);
 				$ccnum = filter_input(INPUT_POST, 'ccnum', FILTER_SANITIZE_STRING);
 				$ccexp = filter_input(INPUT_POST, 'ccexp', FILTER_SANITIZE_STRING);
-				$cvv = filter_input(INPUT_POST, 'cvv', FILTER_SANITIZE_STRING);
+				$ccv = filter_input(INPUT_POST, 'ccv', FILTER_SANITIZE_STRING);
 				$product = filter_input(INPUT_POST, 'product', FILTER_SANITIZE_STRING);
 				$price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_STRING);
-				echo doBooking($db, $member_id, $address_id, $coupon, $product, $price, $date, $time, $ccnum, $ccexp, $cvv);
+				echo doBooking($db, $member_id, $address_id, $coupon, $product, $price, $date, $time, $ccnum, $ccexp, $ccv);
+				break;
+			case 'storeAppointmentId':
+				$appointment_id = filter_input(INPUT_POST, 'appointmentId', FILTER_SANITIZE_STRING);
+				$_SESSION['appointment_id'] = $appointment_id;
+				echo true;
+				break;
+			case 'rescheduleAppointment':
+				$member_id = $_SESSION['member_id'];
+				$appointment_id = $_SESSION['appointment_id'];
+				$address_id = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
+				$date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
+				$time = filter_input(INPUT_POST, 'time', FILTER_SANITIZE_STRING);
+				echo rescheduleAppointment($db, $member_id, $appointment_id, $address_id, $date, $time);
+				break;
+			case 'cancelAppointment':
+				$member_id = $_SESSION['member_id'];
+				$appointment_id = $_SESSION['appointment_id'];
+				echo cancelAppointment($db, $member_id, $appointment_id);
 				break;
 			default:
 				break;
 		}
 	}
 
-	function doBooking($db, $member_id, $address_id, $coupon_id, $product, $price, $date, $time, $ccnum, $ccexp, $cvv) {
-		//TODO: get member name, get product name
+	function doBooking($db, $member_id, $address_id, $coupon_id, $product, $price, $date, $time, $ccnum, $ccexp, $ccv) {
         $member = getMemberDetails($db, $member_id);
         if($member) {
-        	$transResult = processTransaction($member['fname'], $member['lname'], $product, $price, $ccnum, $ccexp, $cvv);
-        	if($transResult==0 || $transResult) {  //HARDCODE
-        		if ($transResult == 'Declined') {
-        			error_log('Transaction declined for member_id ' . $member_id);
-        			return $transResult;
+        	$transResult = processTransaction($member['fname'], $member['lname'], $product, $price, $ccnum, $ccexp, $ccv);
+        	if($transResult) {
+        		error_log(print_r($transResult, true));
+        		if ($transResult['error_code']) {
+        			error_log('Transaction declined for member_id ' . $member_id . 'because '.$transResult['error_detail']);
+        			return json_encode($transResult);
         		} else {
     				$product_id = getIdForProduct($db, $product);
     				$order_id = storeOrder($db, $member_id, $product_id, $transResult, $coupon_id, $price);

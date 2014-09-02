@@ -14,7 +14,7 @@
 					return false;
 				} 
 			} else {
-				error_log('Couldnt inset order assiciation');
+				error_log('Couldnt insert order assiciation');
 			}
 		} else {
 			error_log('Couldnt insert order');
@@ -22,9 +22,51 @@
 		}
 	}
 
+	function rescheduleAppointment($db, $member_id, $appointment_id, $address_id, $date, $time) {
+		if($stmt = prepareStatement($db, "UPDATE appointments SET address_id=?, scheduled_date=?, scheduled_time=? WHERE id=? AND member_id=?")) {
+			$stmt->bind_param('issii', $address_id, $date, $time, $appointment_id, $member_id);
+			if ($stmt->execute()) {
+				if($db->affected_rows) {
+					return true;
+				} else {
+					return "No Change";
+				}
+			} else {
+				error_log('Could not update appointment ' . $appointment_id .' for member_id ' . $member_id . ' due to '. $db->error);
+			}
+		}
+		return false;
+	}
+
+	function cancelAppointment($db, $member_id, $appointment_id) {
+		error_log('id is probably empty? '.$appointment_id);
+		if($stmt = prepareStatement($db, "DELETE FROM appointment_for_order WHERE appointment_id=?")) {
+			$stmt->bind_param('i', $appointment_id);
+			if ($stmt->execute()) {
+				if($db->affected_rows) {
+					error_log('delete of assoc: '.$db->affected_rows);
+					if($stmt = prepareStatement($db, "DELETE FROM appointments WHERE id=? AND member_id=?")) {
+						$stmt->bind_param('ii', $appointment_id, $member_id);
+						if ($stmt->execute()) {
+							if($db->affected_rows) {
+								error_log('delete of actual: '.$db->affected_rows);
+								return true;
+							} 
+						} else {
+							error_log('Could not delete appointment ' . $appointment_id .' for member_id ' . $member_id . ' due to '. $db->error);
+						}
+					}
+				} 
+			} else {
+				error_log('Could not delete appointment ' . $appointment_id .' for member_id ' . $member_id . ' due to '. $db->error);
+			}
+		}
+		return 0;
+	}
+
 	function getAppointmentsForMember($db, $member_id) {
 		$result = array();
-		if($stmt = prepareStatement($db, "SELECT p.product_name, ma.street_address, ma.apt_num, ma.city, ma.state, ma.zip, a.scheduled_date, a.scheduled_time"
+		if($stmt = prepareStatement($db, "SELECT a.id, p.product_name, ma.street_address, ma.apt_num, ma.city, ma.state, ma.zip, a.scheduled_date, a.scheduled_time"
 			." FROM appointments a INNER JOIN products p ON a.product_id = p.product_id"
 			." INNER JOIN member_address ma ON ma.address_id = a.address_id"
 			." WHERE a.member_id=?"
@@ -33,10 +75,10 @@
 			$stmt->execute();
 			$stmt->store_result();
 			if($stmt->num_rows > 0) {
-				$stmt->bind_result($product, $address, $aptNum, $city, $state, $zip, $date, $time);
+				$stmt->bind_result($appt_id, $product, $address, $aptNum, $city, $state, $zip, $date, $time);
 				$i = 0;
 				while ($row = $stmt->fetch()) {
-					$appointment = array('product' => $product, 'address' => $address, 'aptnum' => $aptNum, 'city' => $city,
+					$appointment = array('appointment_id' => $appt_id, 'product' => $product, 'address' => $address, 'aptnum' => $aptNum, 'city' => $city,
 					 'state' => $state, 'zip' => $zip, 'date' => $date, 'time' => $time);
 					$result[$i] = $appointment;
 					$i++;
@@ -48,9 +90,12 @@
 
 	function formatAppointment($appointment) {
 		$apt = ($appointment['aptnum'] ? 'Apt: '.$appointment['aptnum'] : '');
+		$time = $appointment['time'];
+		$time = ($time[0] == '0') ? substr($time, 1) : $time;
 		return '<li class="appointment-entry">'.
+			'<input type="hidden" value="'.$appointment['appointment_id'].'">'.
 			'<h3>'.$appointment['date'].'</h3>'.
-			'<span>'.$appointment['product'].' at '.$appointment['time'].'</span>'.
+			'<span>'.$appointment['product'].' at '.$time.'</span>'.
 			'<span>'.$appointment['address'].' '.$apt.'</span>'.
 			'<span>'.$appointment['city'].', '.$appointment['state'].' '.$appointment['zip'].'</span>'.
 		'</li>';

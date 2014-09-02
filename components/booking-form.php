@@ -12,7 +12,7 @@
 		<form id="booking-form" class="vertical-center modal-content">
 			<form>
 		<?php if(!$logged_in) { ?>
-			<fieldset>
+			<fieldset id="new-user-form">
 				<h2>Tell us about you</h2>
 				<div class="grid clear">
 					<div class="col-2-5"><input type="text" name="fname" id="fname" placeholder="first" required></div>
@@ -33,7 +33,7 @@
 				<button type="button" class="btn-booking-next btn-booking-only" onclick="processAboutMe(this.form, $(this).parent(), $(this).parent().next())">Next</button>
 			</fieldset>
 		<?php } ?>
-			<fieldset>
+			<fieldset id="product-select-form">
 				<div id="booking-product">
 					<h2>What can we do for you?</h2>
 					<input type="radio" name="product" id="blowout" value="Blowout" required onclick="updatePrice($(this));">
@@ -45,7 +45,7 @@
 					<input type="radio" name="product" id="package" value="package">
 					<label for="package">Package</label>
 				</div>
-				<div class="grid clear">
+				<div id="booking-reciept" class="grid clear">
 					<div id="booking-price" class="grid clear">
 						<table id="price-detail" class="col-1">
 							<tr>
@@ -74,9 +74,9 @@
 				<div class="grid clear">
 					<span class="response col-1" id="coupon-result"></span>
 				</div>
-				<button type="button" class="btn-booking-next btn-booking-only" onclick="advanceForm($(this).parent(), $(this).parent().next());">Where</button>
+				<button type="button" class="btn-booking-next btn-booking-only" onclick="advanceForm($(this).parent(), 1);">Next</button>
 			</fieldset>
-			<fieldset>
+			<fieldset id="address-select-form">
 				<h2>Where do we send our stylist?</h2>
 				<?php $addrRequired = true;
 				if($logged_in) { 
@@ -107,10 +107,10 @@
 				<div class="grid clear">
 					<div class="col-1"><input type="text" name="instruction" id="instructions" placeholder="special instructions" class="col-1"></div>
 				</div>
-				<button type="button" class="btn-booking-back">Back</button>
-				<button type="button" class="btn-booking-next" onclick="processAddress($(this).parent(), $(this).parent().next());">When</button>
+				<button type="button" class="btn-booking-back" onclick="advanceForm($(this).parent(), -1);">Back</button>
+				<button type="button" class="btn-booking-next" onclick="processAddress($(this).parent());">Next</button>
 			</fieldset>
-			<fieldset>
+			<fieldset id="scheduling-form">
 				<h2>When should we arrive?</h2>
 				<div class="grid clear">
 					<span class="fa fa-calendar fa-3x col-1-3"></span>
@@ -121,26 +121,42 @@
 					<div class="col-2-3"><input type="text" name="time" id="time" required placeholder="hh:mm AM"></div>
 				</div>
 				<span class="response">result</span>
-				<button type="button" class="btn-booking-back">Back</button>
-				<button type="button" class="btn-booking-next" onclick="processApptTime($(this).parent(), $(this).parent().next());">Payment</button>
+				<button type="button" class="btn-booking-back" onclick="advanceForm($(this).parent(), -1);">Back</button>
+				<button type="button" class="btn-booking-next" onclick="processApptTime($(this).parent());">Next</button>
 			</fieldset>
-			<fieldset>
+			<fieldset id="payment-form">
 				<h2>Credit Card Info</h2>
 				<div class="grid clear">
 					<div class="col-1"><input type="text" name="ccnum" id="ccnum" placeholder="credit card #"></div>
 				</div>
 				<span>Visa/MC/Discover</span>
 				<div class="grid clear">
-					<div class="col-4-5"><input type="text" name="expiry" id="expiry" placeholder="Expiration: MM / YY"></div>
-					<div class="col-1-5"><input type="text" name="cvv" id="cvv" placeholder="CVV"></div>
+					<div class="col-4-5"><input type="text" name="expiry" id="expiry" placeholder="Expiration: MM/YY"></div>
+					<div class="col-1-5"><input type="text" name="ccv" id="ccv" placeholder="CCV"></div>
 				</div>
-				<button type="button" class="btn-booking-back">Back</button>
+				<div class="grid clear">
+					<span class="response col-1" id="payment-result"></span>
+				</div>
+				<button type="button" class="btn-booking-back" onclick="advanceForm($(this).parent(), -1);">Back</button>
 				<button type="button" class="btn-booking-next" onclick="completeBooking($(this).parent());">Book</button>
 			</fieldset>
-			<div id="booking-success">
+			<fieldset id="cancel-confirm">
+				<h2>Are you sure you want to cancel</h2>
+				<button type="button" class="btn-booking-next btn-booking-only" onclick="advanceForm($(this).parent(), 1);">Cancel</button>
+			</fieldset>
+			<div class="booking-result" id="booking-success">
 				<section>
 					<h2>Thanks for using Blohaute!</h2>
 					<h3>See you on <span id="timedateresult"></span></h3>
+				</section>
+				<section>
+					<h2>be gorgeous</h2>
+				</section>
+			</div>
+			<div class="booking-result" id="cancel-success">
+				<section>
+					<h2>Thanks for using Blohaute!</h2>
+					<h3>Your appointment has been cancelled</h3>
 				</section>
 				<section>
 					<h2>be gorgeous</h2>
