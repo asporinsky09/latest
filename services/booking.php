@@ -95,6 +95,15 @@
 				$appointment_id = $_SESSION['appointment_id'];
 				echo cancelAppointment($db, $member_id, $appointment_id);
 				break;
+			case 'notifyEventRequest':
+			error_log('in');
+				$name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+				$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_STRING);
+				$phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+				$date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
+				$details = filter_input(INPUT_POST, 'details', FILTER_SANITIZE_STRING);
+				echo notifyEventRequest($name, $email, $phone, $date, $details);
+				break;
 			default:
 				break;
 		}
@@ -205,6 +214,10 @@
 				return "Sorry, that coupon is invalid";
 		}
 		return json_encode(array('id' => $coupon_id, 'adjust' => $priceAdjust, 'error' => '')); 
+	}
+
+	function notifyEventRequest($name, $email, $phone, $date, $details) {
+		sendEventEmail($name, $email, $phone, $date, $details);
 	}
 
 	function checkForOverMaxUses($db, $max_uses, $coupon_id, $couponCode) {

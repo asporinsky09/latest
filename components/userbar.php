@@ -35,9 +35,9 @@ include_once 'inc/Appointment.php';
 				<div class="clear">
 					<span class="userbar-header-info" id="greeting" onclick="$('#user-details').toggle(); $('.user-option-box:visible').not('#user-details').hide();">welcome back gorgeous</span>
 					<button type="button" class="userbar-header-info" id="userbar-scheduled-header" <?php echo (count($appointments) > 0) ? "onclick=\"$('#scheduled-details').toggle(); $('.user-option-box:visible').not('#scheduled-details').hide();\"" : "" ?>>
-						[<?php echo count($appointments) ?>] scheduled</button>
+						<?php echo count($appointments) ?> scheduled</button>
 					<button type="button" class="userbar-header-info" id="userbar-services-header" onclick="$('#services-details').toggle(); $('.user-option-box:visible').not('#services-details').hide();">
-						[<?php echo $total_unsched_remaining ?>] available</button>
+						<?php echo $total_unsched_remaining ?> available</button>
 				</div>
 			</div>
 		</div>
@@ -88,7 +88,7 @@ include_once 'inc/Appointment.php';
 							<div class="col-auto col-last col-no-outer-pad">
 								<!-- TODO: Open schedule and address selection from booking when the button is clicked -->
 								<button class="option-button" onclick="storeAppointmentInfo($(this)); morphBookingForm($(this), 'reschedule')"><span class="fa fa-pencil-square-o fa-3x"></span></button>
-								<button class="option-button" onclick="storeAppointmentInfo($(this)); morphBookingForm($(this), 'cancel')"><span class="fa fa-times fa-3x"></span></button>
+								<!--<button class="option-button" onclick="storeAppointmentInfo($(this)); morphBookingForm($(this), 'cancel')"><span class="fa fa-times fa-3x"></span></button> -->
 							</div>
 						</section>
 					</div>

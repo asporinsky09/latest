@@ -5,7 +5,7 @@ CREATE TABLE orders (
 	auth_transaction_id VARCHAR(100) NOT NULL,
 	coupon_id INT, 
 	billed_price DECIMAL(7, 2),
-	submitted DATE NOT NULL;,
+	submitted DATE NOT NULL,
 	FOREIGN KEY (member_id) REFERENCES members(id),
 	FOREIGN KEY (product_id) REFERENCES products(product_id),
 	FOREIGN KEY (coupon_id) REFERENCES coupons(id)

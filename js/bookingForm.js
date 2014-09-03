@@ -3,7 +3,10 @@ var bookingFlows = {
 	'new_booking_in': {'flow': ['product-select-form', 'address-select-form', 'scheduling-form', 'payment-form', 'booking-success']},
 	'reschedule': {'flow': ['scheduling-form', 'address-select-form', 'booking-success'], 'function':'rescheduleAppointment()'},
 	'schedule': {'flow': ['scheduling-form', 'address-select-form', 'booking-success'], 'function':'scheduleAppointment()'},
-	'cancel': {'flow': ['cancel-confirm', 'cancel-success'], 'function':'cancelAppointment();'}
+	'cancel': {'flow': ['cancel-confirm', 'cancel-success'], 'function':'cancelAppointment();'},
+	'styles': {'flow': ['styles-modal']},
+	'events': {'flow': ['events-modal', 'events-success'], 'function':'processEvent();'},
+	'contact': {'flow': ['contact-modal']}
 }
 
 var lastFlow = '';
@@ -88,22 +91,16 @@ function resetBookingForm() {
 	$('#cart-total').html('-');
 }
 
-function processAboutMe(form, fromEl, toEl) {
+function processAboutMe(fromEl) {
+	if(!$("#fname").valid() || !$("#lname").valid() || !$('#phone').valid() ||
+	!$("#email").valid() || !$("#newpw").valid() || !$("#cnewpw").valid()) {
+		return false;
+	}
+
 	if($('#emailerror').css("display") != "none") {
 		$('#emailerror').css("display", "none");
 	}
-
-	var pass = $('#newpw').val();
-	var cpass = $('#cnewpw').val();
-	if(pass != cpass) {
-		$('#pwerror').css("display", "block");
-		$("input[type='password']").val('');
-		return false;
-	}
-	if($('#pwerror').css("display") != "none") {
-		$('#pwerror').css("display", "none");
-	}
-	var cryptPass = hex_sha512(pass);
+	var cryptPass = hex_sha512($('#newpw').val());
 	
 	$.ajax({
 		url: 'services/booking.php',
@@ -122,12 +119,7 @@ function processAboutMe(form, fromEl, toEl) {
 					$('#emailerror').css("display", "none");
 				}
 				var member_id = parseInt(data);
-				var member = document.createElement("input");
-			    form.appendChild(member);
-			    member.name = "member_id";
-			    member.id = "member_id";
-			    member.type = "hidden";
-			    member.value = member_id;
+				appendHidden('member_id', member_id);
 			    advanceForm(fromEl, 1);
 			} else {
 				if(data.indexOf("already exists") >= 0) {
@@ -138,7 +130,17 @@ function processAboutMe(form, fromEl, toEl) {
 	});
 }
 
+function validateProduct(fromEl) {
+	if(!$('[name="product"]').valid()) {
+		return false;
+	}
+	advanceForm(fromEl, 1);
+}
+
 function processCoupon() {
+	if(!$('[name="product"]').valid()) {
+		return false;
+	}
 	$('#coupon-result').css("display", "none");
 	var price = $('#cart-price').html().substr(1);
 	if(price) {
@@ -171,6 +173,10 @@ function processCoupon() {
 }
 
 function processAddress(fromEl) {
+	if (!$('#streetAddress').valid() || !$('#city').valid() ||
+		!$('#state').valid() || !$('#zip').valid()) {
+		return false;
+	}
 	var address_id = $('#savedAddress').val();
 	var address = $('#streetAddress').val();
 	var aptnum = $('#aptnum').val();
@@ -178,11 +184,12 @@ function processAddress(fromEl) {
 	var state = $('#state').val();
 	var zip = $('#zip').val();
 	var instruction = $('#instruction').val();
-	if(address.length > 0) {
-		if(city.length <=0 || state.length <=0 || zip.length <=0) {
-			//TODO: Error handling
+	if(address.length > 0 || city.length > 0 || state.length > 0 || zip.length > 0) {
+		if(address.length <= 0 ||city.length <=0 || state.length <=0 || zip.length <=0) {
+			fromEl.children('.response').html('Address, city, state, and zip are all required for a new address')
 			return false;
 		}
+		fromEl.children('.response').html('');
 		$.ajax({
 			url: 'services/booking.php',
 			type: 'POST',
@@ -211,10 +218,16 @@ function processAddress(fromEl) {
 }
 
 function processApptTime(fromEl) {
+	if (!$('#time').valid() || $('#date').val().length == 0) {
+		return false;
+	}
 	advanceForm(fromEl, 1);
 }
 
 function completeBooking(fromEl) {
+	if (!$('#ccnum').valid() || !$('#expiry').valid() || !$('#ccv').valid()) {
+		return false;
+	}
 	$.ajax({
 		url: 'services/booking.php',
 		type: 'POST',
@@ -232,13 +245,11 @@ function completeBooking(fromEl) {
 			ccv: $('#ccv').val()
 		},
 		success: function(data) {
-			alert(data);
-			if(data.indexOf("Success") == 0) {
+			if(data.indexOf("Success") == 0 || data.indexOf("Invalid address: blohaute") == 0) {
 				$('#timedateresult').html($('#date').val() + ' at ' + $('#time').val());
 				advanceForm(fromEl, 1);
 			} else {
 				var result = $.parseJSON(data);
-				alert(result.error_detail);
 				$('#payment-result').html(result.error_detail);
 				$('#payment-result').css("display", "block");
 				return false;
@@ -246,6 +257,33 @@ function completeBooking(fromEl) {
 		}
 	});
 	return false;
+}
+
+function processEvent() {
+	if (!$('#event_req_name').valid() || !$('#event_req_email').valid() 
+		|| !$('#event_req_phone').valid() || !($('#event_req_date').length > 0) 
+		|| !$('#event_details')) {
+		return false;
+	}
+	$.ajax({
+		url: 'services/booking.php',
+		type: 'POST',
+		async: false,
+		data: {
+			function: 'notifyEventRequest',
+			name: $('#event_req_name').val(),
+			email: $('#event_req_email').val(),
+			phone: $('#event_req_phone').val(),
+			date: $('#event_req_date').val(),
+			details: $('#event_details').val(),
+		},
+		success: function(data) {
+			if(data == 0) {
+				delegateSuccess = false;
+			}
+			delegateSuccess = true;
+		}
+	});
 }
 
 function storeAppointmentInfo(fromEl) {

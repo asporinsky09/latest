@@ -2,6 +2,43 @@
 include_once '../inc/Member.php';
 include_once("../inc/phpmailer.class.php");
 
+function sendEventEmail($name, $email, $phone, $date, $details) {
+    error_log("Attempting");
+    $mail = new PHPMailer();
+
+try {
+    $mail->IsSMTP();
+    $mail->SMTPDebug = 1;
+    $mail->Host = 'smtpout.secureserver.net';
+    $mail->SMTPAuth = true;
+    $mail->Port = 25;
+    $mail->Username = 'bookings@blohaute.com';
+    $mail->Password = 'Soltwisch22';
+
+    $mail->Timeout = 36000;
+    $mail->Subject = 'Blohaute Event Request';
+    $from = 'bookings@blohaute.com';
+    $mail->From = $from;
+    $mail->FromName = 'blohaute';
+    $mail->AddReplyTo('blohaute', $from);
+    $mail->AddAddress('amanda@blohaute.com', '');
+    $mail->Body = '<div style="margin-bottom:20px;">
+    <label style="width:110px;font-weight:bold;display:inline-block;">Requested By:</label> ' . $name . '<br />
+    <label style="width:110px;font-weight:bold;display:inline-block;">Contact Info:</label> ' . $email . ' ' . $phone . '<br />
+    <label style="width:110px;font-weight:bold;display:inline-block;">Event Date:</label> ' . $date . '<br />
+    <label style="width:110px;font-weight:bold;display:inline-block;">Details:</label> ' . $details;
+
+    $mail->IsHTML(true);
+    if(!$mail->Send()) {
+        error_log("Error sending mail ".$mail->ErrorInfo);
+    }
+    } catch (phpmailerException $e) {
+      error_log($e->errorMessage()); //Pretty error messages from PHPMailer
+    } catch (Exception $e) {
+      error_log($e->getMessage()); //Boring error messages from anything else!
+    }
+}
+
 function sendBookingConfirmation($db, $member_id, $member, $address_id, $coupon_id, $product_id, $product_name, $price, $date, $time) {
 	$address = getMemberAddress($db, $member_id, $address_id);
 	$mail = new PHPMailer();
@@ -45,12 +82,10 @@ try {
         <td></td>
     </tr>
 </table>';
-error_log('finished mail call');
     $mail->IsHTML(true);
     if(!$mail->Send()) {
     	error_log("Error sending mail ".$mail->ErrorInfo);
     }
-    error_log("past send");
     } catch (phpmailerException $e) {
 	  error_log($e->errorMessage()); //Pretty error messages from PHPMailer
 	} catch (Exception $e) {

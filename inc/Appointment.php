@@ -127,12 +127,22 @@
 		$apt = ($appointment['aptnum'] ? 'Apt: '.$appointment['aptnum'] : '');
 		$time = $appointment['time'];
 		$time = ($time[0] == '0') ? substr($time, 1) : $time;
+		$product = $appointment['product'];
+		if(isPackage($appointment)) {
+			preg_match_all('/ (.*?)s/', $product, $match);
+			error_log("matched ".print_r($match, true));
+			$product = $match[1][0];
+		}
 		return '<li class="appointment-entry">'.
 			'<input type="hidden" value="'.$appointment['appointment_id'].'">'.
 			'<h3>'.$appointment['date'].'</h3>'.
-			'<span>'.$appointment['product'].' at '.$time.'</span>'.
+			'<span>'.$product.' at '.$time.'</span>'.
 			'<span>'.$appointment['address'].' '.$apt.'</span>'.
 			'<span>'.$appointment['city'].', '.$appointment['state'].' '.$appointment['zip'].'</span>'.
 		'</li>';
+	}
+
+	function isPackage($appointment) {
+		return preg_match('/^\d/', $appointment['product']) === 1;
 	}
 ?>

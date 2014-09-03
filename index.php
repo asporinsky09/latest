@@ -5,6 +5,7 @@ include_once 'inc/Session.php';
 
 	SecureSession::create();
 	$logged_in = login_check($db);
+	error_log('logged in check '.$logged_in);
 
 include("components/pagebegin.php"); ?>
 	<body>
@@ -13,9 +14,9 @@ include("components/pagebegin.php"); ?>
 				<div class="vertical-align-wrapper">
 					<div class="vertical-center content-main-align">
 						<h2>this is blohaute</h2>
-						<p>its a mobile on demand styling app<br> and you should sign up so we can get<br> rich and buy a yacht. sounds good.</p>
-						<?php if($logged_in) { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking_in')\">book now</button>"; }
-						 else { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking')\">book now</button>"; } ?>
+				<p>the mobile styling service that <br>brings the blowdry salon right to your door<br>beautiful hair with the click of a button</p>
+				<?php if($logged_in) { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking_in')\">book now</button>"; }
+				 else { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking')\">book now</button>"; } ?>
 					</div>
 				</div>
 			</section>
@@ -28,7 +29,7 @@ include("components/pagebegin.php"); ?>
 			</div>
 			<section id="content-main-left">
 				<h2>this is blohaute</h2>
-				<p>its a mobile on demand styling app<br> and you should sign up so we can get<br> rich and buy a yacht. sounds good.</p>
+				<p>the mobile styling service that <br>brings the blowdry salon right to your door<br>beautiful hair in the cick of a button</p>
 				<?php if($logged_in) { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking_in')\">book now</button>"; }
 				 else { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking')\">book now</button>"; } ?>
 			</section>
@@ -50,10 +51,35 @@ include("components/pagebegin.php"); ?>
     <script>
 	    $(function() {
 	    	$("#date").datepicker({minDate: 0, dateFormat: 'yy-mm-dd'});
+	    	$("#event_req_date").datepicker({minDate: 0, dateFormat: 'yy-mm-dd'});
 	    });
 	    $("#booking-form").validate({
-			onfocusout: function(element) { $(element).valid(); }
+			onfocusout: false,
+			rules: {
+				cnewpw: {
+					equalTo: "#newpw"
+				},
+				ccnum: {
+					creditcard: true
+				}
+			},
+			errorPlacement: function(error, element) {
+				var target = element.parent().parent().next('.response');
+				// if (target.html().length == 0) {
+					error.appendTo(target);
+				// }
+			},
+			messages: {
+				fname: "Your first name is required",
+				lname: "Your last name is required",
+				phone: "A 10 digit phone number is required",
+				product: "Please select a service or package",
+				expiry: "Expiration Date is required",
+				ccv: "CCV code is required"
+			}
+		});
+		jQuery.extend(jQuery.validator.messages, {
+		    equalTo: "Passwords do not match"
 		});
 	</script>
-});
 </html>

@@ -10,6 +10,6 @@ VALUES('Blowout', 50.00, 1),
 ('Braid', 50.00, 1), 
 ('Up-Do', 85.00, 1),
 ('4 Blowouts', 190.00, 4),
-('8 Blowouts', 360.00), 8,
+('8 Blowouts', 360.00, 8),
 ('12 Blowouts', 520.00, 12),
 ('16 Blowouts', 700.00, 16);
