@@ -24,6 +24,10 @@ function advanceForm(fromEl, direction) {
 		var current = flow[i];
 		var next = i + direction;
 		if(current.indexOf(fromEl.attr('id')) == 0) {
+			var temp = flow[next];
+			if(temp == 'payment-form' && $('#total_price').val().indexOf("0") == 0) {
+				next = next + 1;
+			}
 			toEl = $('#' + flow[next]);
 			if (toEl) {
 				if (next < flow.length - 2) {  // -2 because of success or feedback form
@@ -54,7 +58,8 @@ function advanceForm(fromEl, direction) {
 
 $(document).click(function(event) { 
     if(!(($(event.target).closest('#booking-form').length) 
-    	|| $(event.target).is('[class^="ui-"]'))) {
+    	|| $(event.target).is('[class^="ui-"]')
+    	|| $(event.target).is('#remove-coupon'))) {
     	//TODO: That ui- check thing is troublesome... I couldn't find a better way to do this, since that ui element had no parent
         if($('.overlay-wrapper').css("visibility") == "visible") {
         	$('.booking-result').each(function(index) {
@@ -62,9 +67,13 @@ $(document).click(function(event) {
 	            	location.reload();
 	        	}
 	        });
+	        $('.content-section-modal').each(function(index) {
+        		if($(this).css("display") != "none") {
+	            	$(this).hide();
+	        	}
+	        });
             $('.overlay-wrapper').css({visibility:"hidden"});
             $('body').removeClass('blur');
-            resetBookingForm();  //TODO: Move this so the form stays filled out until I Want it cleared
         }
     }        
 });
@@ -80,15 +89,19 @@ function resetBookingForm() {
 		$(this).hide();
 	});
 	$('#booking-success:visible').hide();
-	removeHidden('coupon_id');
 	removeHidden('address_id');
 	removeHidden('total_price');
 	$('#cart-product').html('');
 	$('#cart-price').html('');
+	resetCoupon();
+	$('#cart-total').html('-');
+}
+
+function resetCoupon() {
 	$('#cart-coupon-label').html('');
 	$('#cart-coupon').html('');
 	$('#cart-coupon-adjust').html('');
-	$('#cart-total').html('-');
+	removeHidden('coupon_id');
 }
 
 function processAboutMe(fromEl) {
@@ -161,7 +174,7 @@ function processCoupon() {
 					$('#coupon-result').html(result.error);
 					$('#coupon-result').css("display", "block");
 				} else {
-					$('#cart-coupon-label').html('<span class="remove-coupon" onclick="$(\'#cart-coupon\').html(\'\'); $(\'#cart-coupon-adjust\').html(\'\'); $(\'#cart-coupon-label\').html(\'\');">X</span> Coupon');
+					$('#cart-coupon-label').html('<span id="remove-coupon" onclick="$(\'#cart-coupon\').html(\'\'); $(\'#cart-coupon-adjust\').html(\'\'); $(\'#cart-coupon-label\').html(\'\'); calculatePrice();">X</span> Coupon');
 					$('#cart-coupon').html(coupon);
 					$('#cart-coupon-adjust').html('- $' + parseFloat(result.adjust).toFixed(2));
 					appendHidden('coupon_id', result.id);
@@ -221,7 +234,43 @@ function processApptTime(fromEl) {
 	if (!$('#time').valid() || $('#date').val().length == 0) {
 		return false;
 	}
-	advanceForm(fromEl, 1);
+	if($('#total_price').length > 0) {
+		if($('#total_price').val().indexOf("0") == 0) {
+			$.ajax({
+				url: 'services/booking.php',
+				type: 'POST',
+				async: false,
+				data: {
+					function: 'doBooking',
+					price: $('#total_price').val().substr($('#total_price').val().indexOf('$') + 1),
+					product_id: $('input[name=product]:checked').val(),
+					product_name: $('input[name=product]').attr("id"),
+					coupon_id: $('#coupon_id').val(),
+					address: $('#address_id').val(),
+					date: $('#date').val(),
+					time: $('#time').val(),
+					ccnum: $('#ccnum').val(),
+					ccexp: $('#expiry').val(),
+					ccv: $('#ccv').val()
+				},
+				success: function(data) {
+					if(data.indexOf("Success") == 0 || data.indexOf("Invalid address: blohaute") == 0) {
+						$('#timedateresult').html($('#date').val() + ' at ' + $('#time').val());
+						advanceForm(fromEl, 1);
+					} else {
+						var result = $.parseJSON(data);
+						$('#payment-result').html(result.error_detail);
+						$('#payment-result').css("display", "block");
+						return false;
+					}
+				}
+			});
+		} else {
+			advanceForm(fromEl, 1);
+		}
+	} else {
+		advanceForm(fromEl, 1);
+	}
 }
 
 function completeBooking(fromEl) {
@@ -386,6 +435,9 @@ function scheduleAppointment() {
 
 function updatePrice(selectedEl, price) {
 	var product = selectedEl.attr("id");
+	if($('#cart-product').html() != product) {
+		resetCoupon();
+	}
 	$('#cart-product').html(product);
 	$('#cart-price').html('$' + parseFloat(price).toFixed(2));
 	calculatePrice();
@@ -442,22 +494,20 @@ function resizeBookingFormToFieldset(fromEl, toEl) {
 function morphBookingForm(fromEl, flowKey, loggedIn) {
 	var invisEl = $('.overlay-wrapper');
 	var toEl = $('#booking-form');
-
 	var flow = bookingFlows[flowKey].flow;
 	if(flow) {
-		var initialPage = flow[0];
-		var targetPage = initialPage;
-		var page = $('#' + targetPage);
-		if (page.length == 0) {
-			return false;
-		}
 		if(lastFlow != flowKey) {
+			var targetPage = flow[0];
+			var page = $('#' + targetPage);
+			if (page.length == 0) {
+				return false;
+			}
 			resetBookingForm();
 			page.children('.btn-booking-back').hide();
 			page.children('.btn-booking-next').addClass('btn-booking-only');
+			lastFlow = flowKey;
+			page.show();
 		}
-		lastFlow = flowKey;
-		page.show();
 
 		var myTimeline = new TimelineLite({onComplete:function() {
 			clone.remove();
@@ -486,7 +536,7 @@ function morphBookingForm(fromEl, flowKey, loggedIn) {
 		}
 		
 		$('body').addClass('blur');
-		myTimeline.to(clone, .5, {left:toLeft,top:toTop,margin:0,width:toWidth,height:toHeight,backgroundColor:"rgba(252, 220, 226, .6)"})
+		myTimeline.to(clone, .5, {left:toLeft,top:toTop,margin:0,width:toWidth,height:toHeight,backgroundColor:toEl.css('backgroundColor')})
 		.to(clone, 0, {visibility:"hidden",opacity:0})
 		.to(invisEl, 0, {visibility:"visible"})
 		return true;

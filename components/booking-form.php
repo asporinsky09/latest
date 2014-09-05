@@ -82,7 +82,7 @@
 							</tfoot>
 						</table>
 					</div>
-					<span class="form-detail">Do you have a coupon?</span>
+					<span class="form-detail">Do you have a coupon or voucher?</span>
 					<div class="inside-button-wrapper" id="coupon-wrapper">
 						<input type="text" name="coupon" id="coupon" placeholder="coupon code" maxlength="18" class="inside-button-outer">
 						<button type="button" class="inside-button-button" id="coupon-apply" onclick="processCoupon();">Apply</button>
@@ -170,7 +170,7 @@
 					<h2>be gorgeous</h2>
 				</section>
 			</div>
-			<div class="booking-result" id="events-success">
+			<div class="content-section-modal" id="events-success">
 				<section>
 					<h2>Thanks for using Blohaute!</h2>
 					<h3>You will hear from us within 24 hours</h3>
@@ -188,7 +188,7 @@
 					<h2>be gorgeous</h2>
 				</section>
 			</div>
-			<div class="booking-result" id="styles-modal">
+			<div class="content-section-modal" id="styles-modal">
 				<section>
 					<h4>you caught us with our hair down</h4>
 					<h4>this page will be ready soon</h4>
@@ -200,7 +200,7 @@
 					<a href="http://www.pinterest.com/blohaute" target="_blank"><img src="img/pin_white.png"></a>
 				</section>
 			</div>
-			<fieldset class="booking-result" id="events-modal">
+			<fieldset class="content-section-modal" id="events-modal">
 				<h2>Event Description</h2>
 				<div class="grid clear">
 					<div class="col-1-2"><input type="text" name="event_req_name" id="event_req_name" required placeholder="Name"></div>
@@ -217,7 +217,7 @@
 				<span class="response"></span>
 				<button type="button" class="btn-booking-next" onclick="advanceForm($(this).parent(), 1);">Submit</button>
 			</fieldset>
-			<div class="booking-result" id="contact-modal">
+			<div class="content-section-modal" id="contact-modal">
 				<section>
 					<h4>For all business and media inquiries please contact <br><a href="mailto:amanda@blohaute.com">Amanda Soltwisch</a></h4>
 				</section>
@@ -225,7 +225,7 @@
 					<h3>Amanda Soltwisch</h3>
 					<h3>Founder | Master Stylist</h3>
 					<h3>e: amanda@blohaute.com</h3>
-					<h3>t: xxx-xxx-xxxx</h3>
+					<h3>t: (312) 961-6190</h3>
 				</section>
 				<section>
 					<h2>be gorgeous</h2>

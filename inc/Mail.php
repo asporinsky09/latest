@@ -3,7 +3,6 @@ include_once '../inc/Member.php';
 include_once("../inc/phpmailer.class.php");
 
 function sendEventEmail($name, $email, $phone, $date, $details) {
-    error_log("Attempting");
     $mail = new PHPMailer();
 
 try {

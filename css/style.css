@@ -189,7 +189,7 @@ a {
 	height: 100%;
 	overflow: hidden;
 	background: black url('../img/fbg.jpg');
-	background-position: right center;
+	background-position: 70% 50%;
 	background-size: cover;
 }
 
@@ -230,10 +230,6 @@ footer img {
 	margin-left: .6rem;
 }
 
-#userbar {
-	/*float: right;*/
-}
-
 #userbar,
 #user-button-wrapper {
 	height: 3.5rem;
@@ -249,7 +245,7 @@ Responsive Layout
 ============= */
 @media screen {
 	html {
-		font-size: 8px;
+		font-size: 10px;
 	}
 
 	body {
@@ -262,10 +258,15 @@ Responsive Layout
 
 	header {
 		display: block;
-		float: none;
-		/*text-align: center;*/
+		/*float: none;*/
+		text-align: center;
+
 		/*background-color: rgba(0, 0, 0, .45);*/
 		margin-bottom: 0;
+		position: fixed;
+		top:4.5rem;
+		right: 0;
+		left: 0;
 	}
 
 	.user-option-box {
@@ -288,6 +289,20 @@ Responsive Layout
 
 	nav ul {
 		height: 4rem;
+	}
+
+	nav li {
+		line-height: 4rem;
+		/*letter-spacing: .15rem;*/
+	}
+
+	nav li:hover {
+		margin-top: -4px;
+		border-top: 4px solid rgb(252, 220, 226);
+		color: rgb(252, 220, 226);
+		margin-right: 0;
+		border-right: 0;
+		/*letter-spacing: .25rem;*/
 	}
 
 	footer {
@@ -331,20 +346,23 @@ Responsive Layout
 	}
 }
 @media screen and (max-width: 450px) {
+
 	body,
 	.overlay {
 		overflow: auto;
 	}
 
 	.userbar {
-		float: left;
-		position: relative;
+		position: fixed;
+		/*top: .6rem;*/
 		top: 0;
+		left: 0;
 		right: 0;
 	}
-
-	header {
-		float: left;
+}
+@media screen and (max-width: 550px) {
+	html {
+		font-size: 8px;
 	}
 }
 @media screen and (min-width: 450px) {
@@ -352,23 +370,25 @@ Responsive Layout
 		position: fixed;
 		width: auto;
 		display: inline-block;
+		left: auto;
 		right: .6rem;
 		top: .6rem;
 	}
-}
-@media screen and (min-width: 575px) {
-	html {
-		font-size: 10px;
+
+	header {
+		float: left;
+		position: static;
+		/*text-align: left;*/
 	}
 }
-@media screen and (max-height: 575px) {
+@media screen and (min-width: 675px) {
 	html {
-		font-size: 8px;
+		font-size: 12px;
 	}
 }
-@media screen and (min-width: 700px) {
+@media screen and (min-width: 675px) {
 	html {
-		font-size: 10px;
+		font-size: 12px;
 	}
 
 	.logo {
@@ -405,16 +425,22 @@ Responsive Layout
 	}
 
 	.userbar {
-		top: 2rem;
+		top: 2.6rem;
 		right: 2rem;
 		height: 3.5rem;
 		position: fixed;
 		width: auto;
 	}
 
+	header {
+		position: static;
+		/*top: .2;*/
+		width: 100%;
+	}
+
 	.user-option-box {
 		position: fixed;
-		top: 5.5rem;
+		top: 6.1rem;
 		display: none;
 	}
 
@@ -431,6 +457,7 @@ Responsive Layout
 	}
 
 	nav li {
+		line-height: 1;
 		padding: .75rem;
 		display: block;
 		cursor: pointer;
@@ -440,9 +467,11 @@ Responsive Layout
 	}
 
 	nav li:hover {
+		margin-top: 0;
+		border-top: 0;
 		margin-right: -2px;
 		border-right: 2px solid rgb(252, 220, 226);
-		color: rgb(252, 220, 226);
+		/*letter-spacing: .25rem;*/
 	}
 
 	footer {
@@ -473,6 +502,12 @@ Responsive Layout
 	}
 }
 
+@media screen and (min-width: 1000px) {
+	.overlay {
+		background-position: right center;
+	}
+}
+
 @media screen and (min-width: 1000px) and (min-height: 775px) {
 	html {
 		font-size: 16px;
@@ -488,8 +523,20 @@ Responsive Layout
 		font-size: 16px;
 	}
 }
-/*@media screen and (min-width: 1400px) {
-}*/
+@media screen and (max-height: 250px) {
+	html {
+		font-size: 6px;
+	}
+
+	.overlay {
+		background-position: 50% 50%;
+	}
+}
+@media screen and (min-width: 1400px) and (min-height: 1050px) {
+	html {
+		font-size: 22px;
+	}
+}
 
 .login {
 	padding: 0 .25rem;
@@ -536,6 +583,7 @@ textarea,
 	font-family: 'Roboto Slab';
 }
 
+.content-section-modal section:last-of-type h2,
 .booking-result section:last-of-type h2,
 .userbar-header-info {
 	font-family: 'Neutra Display';
@@ -588,13 +636,24 @@ textarea,
 #booking-form button,
 select,
 option,
-textarea,
 #booking-form input[type="text"],
 #booking-form input[type="tel"],
 #booking-form input[type="email"],
 #booking-form input[type="password"],
 #booking-form h3 {
 	line-height: 2.5rem;
+}
+
+.userbar input,
+#booking-form input[type="text"],
+#booking-form input[type="tel"],
+#booking-form input[type="email"],
+#booking-form input[type="password"] {
+	height: 2.5rem;
+}
+
+textarea {
+	line-height: 1.5rem;
 }
 
 #booking-form #packages-button,
@@ -638,6 +697,7 @@ span,
 	font-size: 1.25rem;
 }
 
+.content-section-modal section:last-of-type h2,
 .booking-result section:last-of-type h2 {
 	font-weight: lighter;
 	font-size: 2.5rem;
@@ -645,12 +705,14 @@ span,
 
 .options input {
 	line-height: 1.5rem;
+	height: 1.5rem;
 	font-size: 1rem;
 }
 
 .userbar input,
 .login button {
 	line-height: 2rem;
+	height: 2rem;
 	font-size: 1.5rem;
 }
 
@@ -695,6 +757,8 @@ button,
 .btn-standard:hover,
 .userbar-header-info,
 .user-button,
+.content-section-modal section:last-of-type,
+.content-section-modal section:last-of-type h2,
 .booking-result section:last-of-type,
 .booking-result section:last-of-type h2,
 #styles-modal section,
@@ -706,6 +770,7 @@ button,
 }
 
 .userbar input,
+.content-section-modal section:first-of-type,
 .booking-result section:first-of-type,
 #booking-form fieldset
 {
@@ -743,6 +808,7 @@ textarea,
 	color: rgb(252, 220, 226);
 }
 
+.content-section-modal section:last-of-type h2,
 .booking-result section:last-of-type h2 {
 	color: rgba(252, 220, 226, .65);
 }
@@ -767,6 +833,8 @@ body,
 }
 
 #contact-modal a,
+.content-section-modal h3,
+.content-section-modal section:first-of-type h2,
 .booking-result h3,
 .booking-result section:first-of-type h2,
 #booking-form span {
@@ -978,31 +1046,38 @@ textarea,
 	text-align: right;
 }
 
+.content-section-modal,
 .booking-result {
 	display: none;
 }
 
+.content-section-modal section:first-of-type,
 .booking-result section:first-of-type {
 	padding: 2.5rem 1.5rem;
 }
 
+.content-section-modal section:not(:last-of-type),
 .booking-result section:not(:last-of-type) {
 	background-color: rgba(252, 220, 226, .6);
 }
 
+.content-section-modal section:first-of-type h2,
 .booking-result section:first-of-type h2 {
 	color: rgba(0, 0, 0, .6);
 }
 
+.content-section-modal section:last-of-type,
 .booking-result section:last-of-type {
 	background-color: transparent;
 	padding: 3.5rem 1.5rem;
 }
 
+.content-section-modal section:last-of-type h2,
 .booking-result section:last-of-type h2 {
 	color: rgba(252, 220, 226, .6);
 }
 
+.content-section-modal h3,
 .booking-result h3 {
 	color: rgba(0, 0, 0, .6);
 }
@@ -1103,6 +1178,7 @@ textarea,
 	display: none;
 }
 
+#remove-coupon,
 .span-btn {
 	cursor: pointer;
 }
@@ -1128,16 +1204,16 @@ textarea,
 	margin-bottom: 1rem;
 }
 
-#booking-result #contact-modal h3 {
+.content-section-modal #contact-modal h3 {
 	text-align: left;
 }
 
-#booking-result #contact-modal h3:last-of-type {
+.content-section-modal #contact-modal h3:last-of-type {
 	padding: 2rem 1.5rem;
 	text-align: left;
 }
 
-#booking-result #contact-modal h3:not(:last-of-type) {
+.content-section-modal #contact-modal h3:not(:last-of-type) {
 	padding: .25rem 1.5rem;
 	text-align: left;
 }

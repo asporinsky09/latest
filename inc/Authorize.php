@@ -12,7 +12,7 @@
             "x_delim_data" => "TRUE",
             "x_delim_char" => "|",
             "x_relay_response" => "FALSE",
-            "x_type" => "AUTH_CAPTURE",
+            "x_type" => "AUTH_ONLY",
             "x_method" => "CC",
             "x_card_num" => $ccnum,
             "x_exp_date" => $ccexp,

@@ -5,7 +5,6 @@ include_once 'inc/Session.php';
 
 	SecureSession::create();
 	$logged_in = login_check($db);
-	error_log('logged in check '.$logged_in);
 
 include("components/pagebegin.php"); ?>
 	<body>
@@ -13,8 +12,8 @@ include("components/pagebegin.php"); ?>
 			<section id="content-main">
 				<div class="vertical-align-wrapper">
 					<div class="vertical-center content-main-align">
-						<h2>this is blohaute</h2>
-				<p>the mobile styling service that <br>brings the blowdry salon right to your door<br>beautiful hair with the click of a button</p>
+						<h2>This is blohaute.</h2>
+				<p>The mobile styling service that <br>brings the blowdry salon right to your door.<br>Beautiful hair with the click of a button.</p>
 				<?php if($logged_in) { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking_in')\">book now</button>"; }
 				 else { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking')\">book now</button>"; } ?>
 					</div>
@@ -24,17 +23,25 @@ include("components/pagebegin.php"); ?>
 				<a href="index.php"><h1 class="logo">blohaute</h1></a>
 			</header>
 			<?php include("components/userbar.php"); ?>
-			<div class="clear">
+			<!-- <div class="clear"> -->
 				<?php include("components/nav.php"); ?>
-			</div>
+			<!-- </div> -->
 			<section id="content-main-left">
-				<h2>this is blohaute</h2>
-				<p>the mobile styling service that <br>brings the blowdry salon right to your door<br>beautiful hair in the cick of a button</p>
+				<h2>This is blohaute.</h2>
+				<p>The mobile styling service that <br>brings the blowdry salon right to your door.<br>Beautiful hair with the click of a button.</p>
 				<?php if($logged_in) { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking_in')\">book now</button>"; }
 				 else { echo "<button class=\"btn-book btn-standard\" onClick=\"morphBookingForm($(this), 'new_booking')\">book now</button>"; } ?>
 			</section>
 			<?php include("components/footer.php"); ?>
 		</div>
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-29437431-2', 'auto');
+			ga('send', 'pageview');
+		</script>
 	</body>
 	<?php include("components/booking-form.php"); ?>
 	<script type="text/JavaScript" src="js/sha512.js"></script> 

@@ -58,7 +58,6 @@
 						$stmt->bind_param('ii', $appointment_id, $member_id);
 						if ($stmt->execute()) {
 							if($db->affected_rows) {
-								error_log('delete of actual: '.$db->affected_rows);
 								return true;
 							} 
 						} else {
@@ -130,7 +129,6 @@
 		$product = $appointment['product'];
 		if(isPackage($appointment)) {
 			preg_match_all('/ (.*?)s/', $product, $match);
-			error_log("matched ".print_r($match, true));
 			$product = $match[1][0];
 		}
 		return '<li class="appointment-entry">'.

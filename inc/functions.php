@@ -33,7 +33,7 @@ function login($email, $password, $db) {
             if (checkbrute($member_id, $db) == true) {
                 // Account is locked 
                 // Send an email to user saying their account is locked
-                error_log('too many attempts');
+                error_log('too many login attempts for email: ' .$email);
                 return false;
             } else {
                 // Check if the password in the database matches
@@ -46,7 +46,6 @@ function login($email, $password, $db) {
                     $_SESSION['member_id'] = $member_id;
                     $member = getMemberDetails($db, $member_id);
                     $_SESSION['member'] = $member;
-                    error_log('member is '.print_r($member, true));
                     $_SESSION['login_verification_string'] = hash('sha512', $password . $user_browser);
                     return true;
                 } else {

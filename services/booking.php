@@ -112,9 +112,15 @@
 	function doBooking($db, $member_id, $address_id, $coupon_id, $product_id, $product_name, $price, $date, $time, $ccnum, $ccexp, $ccv) {
         $member = getMemberDetails($db, $member_id);
         if($member) {
-        	$transResult = processTransaction($member['fname'], $member['lname'], $product_name, $price, $ccnum, $ccexp, $ccv);
+        	$transResult = false;
+        	if(floatval($price) > 0) {
+	        	$transResult = processTransaction($member['fname'], $member['lname'], $product_name, $price, $ccnum, $ccexp, $ccv);
+	        } else {
+	        	$transResult = true;
+        		error_log('Price was not > 0  ' . $price);
+        	}
         	if($transResult) {
-        		if ($transResult['error_code']) {
+        		if (isset($transResult['error_code']) && $transResult['error_code'])  {
         			error_log('Transaction declined for member_id ' . $member_id . 'because '.$transResult['error_detail']);
         			return json_encode($transResult);
         		} else {
@@ -163,10 +169,11 @@
 	}
 
 	function applyCoupon($db, $couponCode, $productId, $originalPrice, $member_id) {
-		if($stmt = prepareStatement($db, "SELECT c.id, value, discount_type, c.product_id, p.product_name, max_uses, max_uses_per_user FROM coupons c"
-			." INNER JOIN products p ON p.product_id = c.product_id"
-			." WHERE coupon_code = ? AND begin_date <= CURDATE() AND (end_date >= CURDATE() OR end_date IS NULL)")) {
-			$stmt->bind_param('s', $couponCode);
+		if($stmt = prepareStatement($db, "SELECT c.id, value, discount_type, cvp.product_id, p.product_name, max_uses, max_uses_per_user FROM coupons c"
+			." INNER JOIN coupon_valid_product cvp ON cvp.coupon_id = c.id"
+			." INNER JOIN products p ON p.product_id = cvp.product_id"
+			." WHERE coupon_code = ? AND p.product_id = ? AND begin_date <= CURDATE() AND (end_date >= CURDATE() OR end_date IS NULL)")) {
+			$stmt->bind_param('ss', $couponCode, $productId);
 			$stmt->execute();
 			$stmt->store_result();
 			$num_coupons = $stmt->num_rows;
@@ -187,8 +194,6 @@
 				if($result = checkOverMemberMaxUses($db, $max_per_user, $coupon_id, $couponCode, $member_id)) {
 					return json_encode(array('id' => '', 'adjust' => '', 'error' => $result));
 				}
-				//TODO: Worry about coupon being applied more than once, handle that
-				//Good to go
 				return applyValidCoupon($couponCode, $coupon_id, $member_id, $originalPrice, $value, $discount_type);
 			} else if($num_coupons < 1) {
 				return json_encode(array('id' => '', 'adjust' => '', 'error' => "Sorry, ".$couponCode." is not valid or expired"));
@@ -196,6 +201,8 @@
 				error_log('More than one coupon returned for '.$couponCode);
 				return false;
 			}
+		} else {
+			error_log('Failed to do it');
 		}
 	}
 

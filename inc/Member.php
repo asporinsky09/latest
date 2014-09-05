@@ -48,7 +48,6 @@
 			}
 			$result = '';
 			$stmt->fetch();
-			error_log("finished address call");
 			return array('address' => $addr, 'aptnum' => $aptnum, 'city' => $city, 'state' => $state, 'zip' => $zip);
 		}
 	}
